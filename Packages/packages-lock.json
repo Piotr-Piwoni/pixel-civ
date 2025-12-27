@@ -1,12 +1,5 @@
 {
   "dependencies": {
-    "com.autodesk.fbx": {
-      "version": "5.1.2",
-      "depth": 2,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
     "com.unity.2d.animation": {
       "version": "13.0.2",
       "depth": 1,
@@ -131,15 +124,6 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.ai.navigation": {
-      "version": "2.0.9",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.ai": "1.0.0"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.burst": {
       "version": "1.8.25",
       "depth": 2,
@@ -195,26 +179,6 @@
         "com.unity.2d.tooling": "1.0.0"
       }
     },
-    "com.unity.feature.worldbuilding": {
-      "version": "1.0.1",
-      "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.probuilder": "6.0.7",
-        "com.unity.formats.fbx": "5.1.4",
-        "com.unity.terrain-tools": "5.3.1"
-      }
-    },
-    "com.unity.formats.fbx": {
-      "version": "5.1.4",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.autodesk.fbx": "5.1.1",
-        "com.unity.timeline": "1.7.1"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.ide.rider": {
       "version": "3.0.38",
       "depth": 0,
@@ -252,18 +216,6 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {},
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.probuilder": {
-      "version": "6.0.7",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.shadergraph": "17.0.3",
-        "com.unity.modules.imgui": "1.0.0",
-        "com.unity.modules.physics": "1.0.0",
-        "com.unity.settings-manager": "1.0.3"
-      },
       "url": "https://packages.unity.com"
     },
     "com.unity.profiling.core": {
@@ -346,16 +298,6 @@
         "com.unity.mathematics": "1.2.1",
         "com.unity.modules.imgui": "1.0.0",
         "com.unity.settings-manager": "1.0.3"
-      },
-      "url": "https://packages.unity.com"
-    },
-    "com.unity.terrain-tools": {
-      "version": "5.3.1",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.unity.modules.terrain": "1.0.0",
-        "com.unity.modules.terrainphysics": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
