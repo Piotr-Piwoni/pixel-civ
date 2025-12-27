@@ -1,0 +1,24 @@
+OVDF v1.1
+PROJECTNAME.Systems.AudioSystem, Project
+MetaGuid:5da0761b5a4e4fb2ba352d2a86942dba
+
+# $XwJoQoho3Xbvy6FwSnpZHo
+Position: "/Debug":4
++ [Sirenix.OdinInspector.ResponsiveButtonGroupAttribute]
+	GroupName = "Testing Buttons"
+
+# "_DefaultResponsiveButtonGroup"
+- [Sirenix.OdinInspector.ResponsiveButtonGroupAttribute]
+
+# _Log
+Position: "/Debug":0
+
+# StopTestingClip()
+Position: $XwJoQoho3Xbvy6FwSnpZHo:1
++ [Sirenix.OdinInspector.EnableIfAttribute]
+	Condition = "_Log"
+
+# PlayTestingClip()
+Position: $XwJoQoho3Xbvy6FwSnpZHo:0
++ [Sirenix.OdinInspector.EnableIfAttribute]
+	Condition = "_Log"

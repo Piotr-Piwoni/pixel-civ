@@ -1,0 +1,106 @@
+# ==========================
+# Unity standard ignores
+# ==========================
+
+# Temp & cache folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+.utmp/
+
+# Memory captures and recordings
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+
+# Unity auto-generated meta & crash files
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+sysinfo.txt
+mono_crash.*
+
+# Builds & packages
+*.apk
+*.aab
+*.app
+*.unitypackage
+*.unitypackage.meta
+
+# TestRunner auto-generated scenes
+InitTestScene*.unity*
+
+# Blender temp files
+*.blend1
+*.blend1.meta
+
+# Addressables auto-generated binaries
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+/[Aa]ssets/Addressables_Temp*
+
+# Optional: StreamingAssets temporary files
+/[Aa]ssets/[Ss]treamingAssets/aa*
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+
+# Visual Scripting auto-generated
+/[Aa]ssets/Unity.VisualScripting.Generated/
+
+# ==========================
+# IDE / Editor ignores
+# ==========================
+
+# JetBrains IDEs
+.idea/
+*.iws
+*.iml
+*.ipr
+*.DotSettings.user
+
+# Rider / VS plugin folders
+/[Aa]ssets/Plugins/Editor/JetBrains*
+
+# Visual Studio & project files
+.vs/
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.VC.db
+
+# Ignore Unity-generated solution/project files
+*.csproj
+*.unityproj
+*.sln
+
+# Gradle
+.gradle/
+cmake-build-*/
+
+# Other IDE caches
+ExportedObj/
+.consulo/
+*.svd
+*.pdb
+*.mdb
+*.opendb
+
+
+# ==========================
+# Crashlytics / Fabric
+# ==========================
+crashlytics-build.properties
+com_crashlytics_export_strings.xml
+crashlytics.properties
+fabric.properties
+
+# ==========================
+# Custom ignores
+# ==========================
+LastProductName.txt
+Assets/_Root/_Scripts/Editor/LastProductName.txt.meta
+Assets/_Root/_Scripts/Runtime/.idea/discord.xml

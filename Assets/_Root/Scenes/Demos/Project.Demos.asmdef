@@ -1,0 +1,18 @@
+{
+    "name": "Project.Demos",
+    "rootNamespace": "Demos",
+    "references": [
+        "GUID:9ed0232aea12c584293ed32bf0ff8803",
+        "GUID:febaf25a60dafbd44941357b21678606",
+        "GUID:4307f53044263cf4b835bd812fc161a4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
