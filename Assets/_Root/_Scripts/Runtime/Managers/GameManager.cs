@@ -35,8 +35,8 @@ public class GameManager : PersistentSingleton<GameManager>
 		base.Awake();
 		_PreviousState = CurrentState;
 
-		HandlePlayerInit();
-		GetCamera();
+		//HandlePlayerInit();
+		//GetCamera();
 	}
 
 	private void Start()

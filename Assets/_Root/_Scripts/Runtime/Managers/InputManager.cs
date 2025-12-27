@@ -56,7 +56,8 @@ public class InputManager : PersistentSingleton<InputManager>
 		base.Awake();
 
 		// Obtain the PlayerInput component from the player object.
-		_PlayerInput = GameManager.Instance.Player.GetComponent<PlayerInput>();
+		if (GameManager.Instance.Player)
+			_PlayerInput = GameManager.Instance.Player.GetComponent<PlayerInput>();
 		if (!_PlayerInput)
 		{
 			Debug.LogError("PlayerInput not found on player object!");
@@ -69,13 +70,16 @@ public class InputManager : PersistentSingleton<InputManager>
 	private void Start()
 	{
 		// Enable the player once the Input Manager initializes.
-		GameManager.Instance.Player.SetActive(true);
+		if (GameManager.Instance.Player)
+			GameManager.Instance.Player.SetActive(true);
 	}
 
 	public override void OnEnable()
 	{
 		base.OnEnable();
 		BindInput();
+		if (!_PlayerInput)
+			return;
 		_PlayerInput.onControlsChanged += OnControlsChanged;
 		UpdateCurrentDeviceType(_PlayerInput.currentControlScheme);
 	}
@@ -84,7 +88,8 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 		base.OnDisable();
 		UnbindInput();
-		_PlayerInput.onControlsChanged -= OnControlsChanged;
+		if (_PlayerInput)
+			_PlayerInput.onControlsChanged -= OnControlsChanged;
 	}
 
 	public override void OnSceneChange(Scene scene, LoadSceneMode mode)
