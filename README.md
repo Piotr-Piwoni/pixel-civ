@@ -1,3 +1,3 @@
-# Unity6.3 Project Template
+# Pixel Civ 
 
-A custom Unity project template made for Unity 6.3. Uses URP and other assets. 
+A simple civilisation-based Unity game in a pixel artstyle made in Unity 6.3.
