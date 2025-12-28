@@ -1,7 +1,6 @@
 using PixelCiv.Systems;
 using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,27 +8,23 @@ namespace PixelCiv.Managers
 {
 public class GameManager : PersistentSingleton<GameManager>
 {
-	[TabGroup("", "Info", SdfIconType.QuestionSquareFill,
-				 TextColor = "lightblue"), ShowInInspector, ReadOnly,]
+	[TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),
+	 ShowInInspector, ReadOnly,]
 	public Camera Camera { get; private set; }
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
-	public CinemachineCamera CinemachineCam { get; private set; }
+	public GameObject ActorGroup { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
 	public GameObject Player { get; private set; }
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly,
-	 PropertyOrder(-1f),]
+	[TabGroup("", "Info"), ShowInInspector, ReadOnly, PropertyOrder(-1f),]
 	public GameState CurrentState { get; private set; } = GameState.Playing;
+	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
+	public Vector3Int PlayerCapitalPosition { get; private set; }
 
-	[SerializeField,
-	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
+	[SerializeField, TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
 	private GameObject _PlayerPrefab;
-	[SerializeField, TabGroup("", "Settings"),]
-	private bool _SpawnPlayer;
 	[SerializeField, TabGroup("", "Settings"),]
 	private AudioClip _MusicClip;
 
 	private bool _DelayPlayerInit;
-	private GameObject _ActorGroup;
 	private GameState _PreviousState;
 	private Spawner _PlayerSpawner;
 
@@ -39,24 +34,7 @@ public class GameManager : PersistentSingleton<GameManager>
 		base.Awake();
 		_PreviousState = CurrentState;
 
-		// If the actor group was not found create it.
-		_ActorGroup = GameObject.FindGameObjectWithTag("ActorGroup");
-		if (!_ActorGroup)
-			_ActorGroup = new GameObject("Actor Group")
-			{
-				tag = "ActorGroup",
-			};
-
-		// Get the player if it already exists, otherwise create one if possible.
-		Player = GameObject.FindGameObjectWithTag("Player");
-		if (!Player && _PlayerPrefab && _SpawnPlayer)
-			_DelayPlayerInit = true;
-		// If there is already a player, ensure it's in the correct group.
-		else
-		{
-			Player.transform.SetParent(_ActorGroup.transform);
-			HandlePlayerInit();
-		}
+		TryGetPlayer();
 	}
 
 	private void Start()
@@ -105,13 +83,17 @@ public class GameManager : PersistentSingleton<GameManager>
 	{
 	}
 
-	/// Handle Player initialization.
+	public void SetPlayerCapital(Vector3Int position)
+	{
+		PlayerCapitalPosition = position;
+	}
+
 	private void HandlePlayerInit()
 	{
-		// Get the player if it already exists, otherwise create one if possible.
+		// Attempt to create a player if possible.
 		if (!Player)
 		{
-			Player = Instantiate(_PlayerPrefab, _ActorGroup.transform);
+			Player = Instantiate(_PlayerPrefab, ActorGroup.transform);
 			_DelayPlayerInit = false;
 		}
 
@@ -127,9 +109,37 @@ public class GameManager : PersistentSingleton<GameManager>
 
 		// If spawner found, spawn the player there.
 		if (_PlayerSpawner)
-			_PlayerSpawner.Spawn(Player.transform, true);
+			_PlayerSpawner.Spawn(Player.transform);
 		else
 			Debug.Log("<color=yellow>Player spawner was not found in the scene. Using default position.</color>");
+	}
+
+	private void TryGetPlayer()
+	{
+		// If the actor group was not found create it.
+		ActorGroup = GameObject.FindGameObjectWithTag("ActorGroup");
+		if (!ActorGroup)
+			ActorGroup = new GameObject("Actor Group")
+			{
+				tag = "ActorGroup",
+			};
+
+		// Try to get existing player.
+		Player = GameObject.FindGameObjectWithTag("Player");
+		if (Player)
+		{
+			Player.transform.SetParent(ActorGroup.transform);
+			HandlePlayerInit();
+			return;
+		}
+
+		// If a player doesn't already exist, create one.
+		// Defer creating the player based on if the Input Manager is initialized.
+		if (!_PlayerPrefab) return;
+		if (!InputManager.Instance)
+			_DelayPlayerInit = true;
+		else
+			HandlePlayerInit();
 	}
 
 

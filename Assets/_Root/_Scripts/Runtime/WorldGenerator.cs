@@ -1,6 +1,9 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using PixelCiv.Managers;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 namespace PixelCiv
 {
@@ -25,7 +28,6 @@ public class WorldGenerator : MonoBehaviour
 
 	private bool _HasChosenCapitalTile;
 	private GameObject _PlayerSpawner;
-	private Vector3Int _PlayerCapitalCellPosition;
 
 
 	private void Start()
@@ -55,7 +57,8 @@ public class WorldGenerator : MonoBehaviour
 		Clear();
 
 		// Create world data.
-		Random.InitState(Time.frameCount);
+		var seed = (int)DateTime.Now.TimeOfDay.TotalSeconds;
+		Random.InitState(seed);
 
 		BoundsInt bounds = new(0, 0, 0, _WorldSize.x, _WorldSize.y, 1);
 		int totalWorldSize = _WorldSize.x * _WorldSize.y;
@@ -71,27 +74,33 @@ public class WorldGenerator : MonoBehaviour
 		}
 
 		// Decide player capital placement.
+		Vector3Int CapitalPosition = GameManager.Instance.PlayerCapitalPosition;
 		do
 		{
 			int x = Random.Range(0, _WorldSize.x);
 			int y = Random.Range(0, _WorldSize.y);
 			int index = y * _WorldSize.x + x;
-			if (tiles[index] != null)
-			{
-				_HasChosenCapitalTile = true;
-				_PlayerCapitalCellPosition = new Vector3Int(x, y, 0);
-				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(_PlayerCapitalCellPosition);
-				spawnerPosition.z = -10f;
-				// Spawner a player spawner.
-				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
-				_PlayerSpawner.GetComponent<Spawner>().SpawnerTag = SpawnerTag.Player;
-			}
-		} while (!_HasChosenCapitalTile);
+			if (!tiles[index]) continue;
 
+			// Spawn player capital.
+			_HasChosenCapitalTile = true;
+			GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
+
+			// Spawner a player spawner.
+			Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(CapitalPosition);
+			spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
+			_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
+
+			// Setup spawner.
+			var spawnerComp = _PlayerSpawner.GetComponent<Spawner>();
+			spawnerComp.SpawnerTag = SpawnerTag.Player;
+			// Spawn player.
+			spawnerComp.Spawn(GameManager.Instance.Player.transform);
+		} while (!_HasChosenCapitalTile);
 
 		// Render.
 		_GroundTilemap.SetTilesBlock(bounds, tiles);
-		_DetailsTilemap.SetTile(_PlayerCapitalCellPosition, _CastleTile);
+		_DetailsTilemap.SetTile(CapitalPosition, _CastleTile);
 	}
 }
 }
