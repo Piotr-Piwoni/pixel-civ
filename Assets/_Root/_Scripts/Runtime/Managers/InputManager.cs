@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using PROJECTNAME.Utilities;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace PROJECTNAME.Managers
+namespace PixelCiv.Managers
 {
 public class InputManager : PersistentSingleton<InputManager>
 {
@@ -16,54 +16,47 @@ public class InputManager : PersistentSingleton<InputManager>
 	public event Action OnMovePressed;
 	public event Action<DeviceType> OnDeviceChanged;
 
-	[TabGroup("", "Info", SdfIconType.QuestionSquareFill,
-		 TextColor = "lightblue"), ShowInInspector, ReadOnly]
-	public DeviceType CurrentDeviceType { get; private set; } =
-		DeviceType.Unknown;
+	public bool IsSprinting { get; private set; }
+
+	[TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),
+	 ShowInInspector, ReadOnly,]
+	public DeviceType CurrentDeviceType { get; private set; } = DeviceType.Unknown;
 
 	public Vector2 LookInput { get; private set; } = Vector2.zero;
 	public Vector2 MoveInput { get; private set; } = Vector2.zero;
 
-	[SerializeField, TabGroup("", "Info"), ReadOnly]
+	[SerializeField, TabGroup("", "Info"), ReadOnly,]
 	private PlayerInput _PlayerInput;
 
 	[SerializeField,
 	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),
-	 FoldoutGroup("/Settings/Input References")]
+	 FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _MoveAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _LookAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _JumpAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _AttackAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _InteractionAction;
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
+	private InputActionReference _SprintAction;
 
-	[SerializeField, FoldoutGroup("/Settings/Action Maps")]
+	[SerializeField, FoldoutGroup("/Settings/Action Maps"),]
 	private string _GameplayActionMap = "Gameplay";
-	[SerializeField, FoldoutGroup("/Settings/Action Maps")]
+	[SerializeField, FoldoutGroup("/Settings/Action Maps"),]
 	private string _UIActionMap = "UI";
 
-	private Action<InputAction.CallbackContext> _attackCallback;
-	private Action<InputAction.CallbackContext> _interactionCallback;
-	private Action<InputAction.CallbackContext> _jumpCallback;
+	private Action<InputAction.CallbackContext> _AttackCallback;
+	private Action<InputAction.CallbackContext> _InteractionCallback;
+	private Action<InputAction.CallbackContext> _JumpCallback;
 	private Dictionary<ActionMap, string> _ActionMapDictionary;
 
 
 	protected override void Awake()
 	{
 		base.Awake();
-
-		// Obtain the PlayerInput component from the player object.
-		if (GameManager.Instance.Player)
-			_PlayerInput = GameManager.Instance.Player.GetComponent<PlayerInput>();
-		if (!_PlayerInput)
-		{
-			Debug.LogError("PlayerInput not found on player object!");
-			return;
-		}
-
 		InitializeActionMaps();
 	}
 
@@ -96,6 +89,13 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 	}
 
+	public void SetPlayerInput(PlayerInput playerInput)
+	{
+		_PlayerInput = playerInput;
+		_PlayerInput.onControlsChanged += OnControlsChanged;
+		UpdateCurrentDeviceType(_PlayerInput.currentControlScheme);
+	}
+
 	/// <summary>
 	///     Switch the currently in-use action map to a new one.
 	/// </summary>
@@ -108,8 +108,7 @@ public class InputManager : PersistentSingleton<InputManager>
 			return;
 		}
 
-		if (_ActionMapDictionary.TryGetValue(actionMap,
-			    out var actionMapName))
+		if (_ActionMapDictionary.TryGetValue(actionMap, out string actionMapName))
 			_PlayerInput.SwitchCurrentActionMap(actionMapName);
 		else
 			Debug.LogError($"No action map found for \"{actionMap}\"");
@@ -121,16 +120,18 @@ public class InputManager : PersistentSingleton<InputManager>
 		_MoveAction.action.canceled += OnMoveCanceled;
 		_LookAction.action.performed += OnLookPerformed;
 		_LookAction.action.canceled += OnLookCanceled;
+		_SprintAction.action.performed += OnSprintPressed;
+		_SprintAction.action.canceled += OnSprintCanceled;
 
 
-		_jumpCallback = _ => OnJumpPressed?.Invoke();
-		_JumpAction.action.performed += _jumpCallback;
+		_JumpCallback = _ => OnJumpPressed?.Invoke();
+		_JumpAction.action.performed += _JumpCallback;
 
-		_attackCallback = _ => OnAttackPressed?.Invoke();
-		_AttackAction.action.performed += _attackCallback;
+		_AttackCallback = _ => OnAttackPressed?.Invoke();
+		_AttackAction.action.performed += _AttackCallback;
 
-		_interactionCallback = _ => OnInteractionPressed?.Invoke();
-		_InteractionAction.action.performed += _interactionCallback;
+		_InteractionCallback = _ => OnInteractionPressed?.Invoke();
+		_InteractionAction.action.performed += _InteractionCallback;
 
 		EnableAllActions();
 	}
@@ -141,6 +142,7 @@ public class InputManager : PersistentSingleton<InputManager>
 		_JumpAction.action.Disable();
 		_AttackAction.action.Disable();
 		_InteractionAction.action.Disable();
+		_SprintAction.action.Disable();
 	}
 
 	private void EnableAllActions()
@@ -149,6 +151,7 @@ public class InputManager : PersistentSingleton<InputManager>
 		_JumpAction.action.Enable();
 		_AttackAction.action.Enable();
 		_InteractionAction.action.Enable();
+		_SprintAction.action.Enable();
 	}
 
 	/// Initialize a dictionary that links the ActionMap enum with their
@@ -158,7 +161,7 @@ public class InputManager : PersistentSingleton<InputManager>
 		_ActionMapDictionary = new Dictionary<ActionMap, string>
 		{
 			{ ActionMap.Gameplay, _GameplayActionMap },
-			{ ActionMap.UI, _UIActionMap }
+			{ ActionMap.UI, _UIActionMap },
 		};
 	}
 
@@ -191,16 +194,31 @@ public class InputManager : PersistentSingleton<InputManager>
 		MoveInput = context.ReadValue<Vector2>();
 	}
 
+	private void OnSprintCanceled(InputAction.CallbackContext context)
+	{
+		IsSprinting = false;
+	}
+
+	private void OnSprintPressed(InputAction.CallbackContext context)
+	{
+		IsSprinting = true;
+	}
+
 	private void UnbindInput()
 	{
 		_MoveAction.action.performed -= OnMovePerformed;
 		_MoveAction.action.canceled -= OnMoveCanceled;
 		_LookAction.action.performed -= OnLookPerformed;
 		_LookAction.action.canceled -= OnLookCanceled;
+		_SprintAction.action.performed -= OnSprintPressed;
+		_SprintAction.action.canceled -= OnSprintCanceled;
 
-		_JumpAction.action.performed -= _jumpCallback;
-		_AttackAction.action.performed -= _attackCallback;
-		_InteractionAction.action.performed -= _interactionCallback;
+		_JumpAction.action.performed -= _JumpCallback;
+		_AttackAction.action.performed -= _AttackCallback;
+		_InteractionAction.action.performed -= _InteractionCallback;
+
+		if (_PlayerInput)
+			_PlayerInput.onControlsChanged -= OnControlsChanged;
 
 		DisableAllActions();
 	}
@@ -213,7 +231,7 @@ public class InputManager : PersistentSingleton<InputManager>
 		{
 			"Keyboard&Mouse" => DeviceType.KeyboardMouse,
 			"Gamepad" => DeviceType.Gamepad,
-			_ => DeviceType.Unknown
+			_ => DeviceType.Unknown,
 		};
 
 		if (newDevice == CurrentDeviceType)
@@ -227,13 +245,13 @@ public class InputManager : PersistentSingleton<InputManager>
 public enum ActionMap
 {
 	Gameplay = 0,
-	UI = 1
+	UI = 1,
 }
 
 public enum DeviceType
 {
 	Unknown = -1,
 	KeyboardMouse = 0,
-	Gamepad = 1
+	Gamepad = 1,
 }
 }

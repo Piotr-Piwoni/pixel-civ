@@ -1,31 +1,35 @@
-﻿using PROJECTNAME.Systems;
-using PROJECTNAME.Utilities;
+using PixelCiv.Systems;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PROJECTNAME.Managers
+namespace PixelCiv.Managers
 {
 public class GameManager : PersistentSingleton<GameManager>
 {
 	[TabGroup("", "Info", SdfIconType.QuestionSquareFill,
-		 TextColor = "lightblue"), ShowInInspector, ReadOnly]
+				 TextColor = "lightblue"), ShowInInspector, ReadOnly,]
 	public Camera Camera { get; private set; }
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly]
+	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
 	public CinemachineCamera CinemachineCam { get; private set; }
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly]
+	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
 	public GameObject Player { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly,
-	 PropertyOrder(-1f)]
+	 PropertyOrder(-1f),]
 	public GameState CurrentState { get; private set; } = GameState.Playing;
 
 	[SerializeField,
-	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow")]
+	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
 	private GameObject _PlayerPrefab;
-	[SerializeField, TabGroup("", "Settings")]
+	[SerializeField, TabGroup("", "Settings"),]
+	private bool _SpawnPlayer;
+	[SerializeField, TabGroup("", "Settings"),]
 	private AudioClip _MusicClip;
 
+	private bool _DelayPlayerInit;
+	private GameObject _ActorGroup;
 	private GameState _PreviousState;
 	private Spawner _PlayerSpawner;
 
@@ -35,8 +39,24 @@ public class GameManager : PersistentSingleton<GameManager>
 		base.Awake();
 		_PreviousState = CurrentState;
 
-		//HandlePlayerInit();
-		//GetCamera();
+		// If the actor group was not found create it.
+		_ActorGroup = GameObject.FindGameObjectWithTag("ActorGroup");
+		if (!_ActorGroup)
+			_ActorGroup = new GameObject("Actor Group")
+			{
+				tag = "ActorGroup",
+			};
+
+		// Get the player if it already exists, otherwise create one if possible.
+		Player = GameObject.FindGameObjectWithTag("Player");
+		if (!Player && _PlayerPrefab && _SpawnPlayer)
+			_DelayPlayerInit = true;
+		// If there is already a player, ensure it's in the correct group.
+		else
+		{
+			Player.transform.SetParent(_ActorGroup.transform);
+			HandlePlayerInit();
+		}
 	}
 
 	private void Start()
@@ -51,24 +71,27 @@ public class GameManager : PersistentSingleton<GameManager>
 
 	private void Update()
 	{
+		if (_DelayPlayerInit && InputManager.Instance)
+			HandlePlayerInit();
+
 		// Handle game functionality differently based on current state.
 		switch (CurrentState)
 		{
-			case GameState.MainMenu:
-				// Logic for when the game is in the Main Menu.
-				break;
-			case GameState.Playing:
-				// Logic for when the game is actually playing.
-				break;
-			case GameState.Talking:
-				// Logic for when talking occurs in the game.
-				break;
-			case GameState.Pause:
-				// Logic for when the game is paused.
-				break;
-			case GameState.Menu:
-				// Logic for when the game is in a UI menu.
-				break;
+		case GameState.MainMenu:
+			// Logic for when the game is in the Main Menu.
+			break;
+		case GameState.Playing:
+			// Logic for when the game is actually playing.
+			break;
+		case GameState.Talking:
+			// Logic for when talking occurs in the game.
+			break;
+		case GameState.Pause:
+			// Logic for when the game is paused.
+			break;
+		case GameState.Menu:
+			// Logic for when the game is in a UI menu.
+			break;
 		}
 	}
 
@@ -82,61 +105,18 @@ public class GameManager : PersistentSingleton<GameManager>
 	{
 	}
 
-	/// Try to obtain the camera in the scene.
-	private void GetCamera()
-	{
-		// Locate the main camera.
-		var cameraObjs = FindObjectsByType<Camera>(
-			FindObjectsInactive.Include,
-			FindObjectsSortMode.None);
-
-		foreach (Camera camObj in cameraObjs)
-			if (camObj.CompareTag("MainCamera"))
-				Camera = camObj;
-
-		if (!Camera)
-		{
-			Debug.LogError("No Camera found in the scene!");
-			return;
-		}
-
-		// Try to get the CinemachineCamera component from the camera's parent.
-		CinemachineCam = Camera.GetComponentInParent<CinemachineCamera>(true);
-		if (!CinemachineCam)
-		{
-			Debug.LogWarning("A Cinemachine Camera was not found in the " +
-			                 "scene or is not the parent object of the Camera.");
-		}
-
-		// If there's a player, move the cameras to the player, otherwise move
-		// them to the Game Manager.
-		if (CinemachineCam)
-		{
-			if (CinemachineCam.transform.parent == Player?.transform)
-				return;
-			CinemachineCam.transform.SetParent(Player
-				? Player.transform
-				: transform);
-			return;
-		}
-
-		if (!Camera || Camera.transform.parent == Player?.transform)
-			return;
-		Camera.transform.SetParent(Player ? Player.transform : transform);
-	}
-
-
 	/// Handle Player initialization.
 	private void HandlePlayerInit()
 	{
 		// Get the player if it already exists, otherwise create one if possible.
-		Player = GameObject.FindGameObjectWithTag("Player");
-		if (!Player && _PlayerPrefab)
-			Player = Instantiate(_PlayerPrefab);
+		if (!Player)
+		{
+			Player = Instantiate(_PlayerPrefab, _ActorGroup.transform);
+			_DelayPlayerInit = false;
+		}
 
 		// Try to obtain the player spawner.
-		var spawners = FindObjectsByType<Spawner>(
-			FindObjectsSortMode.None);
+		Spawner[] spawners = FindObjectsByType<Spawner>(FindObjectsSortMode.None);
 		foreach (Spawner spawner in spawners)
 		{
 			if (spawner.SpawnerTag != SpawnerTag.Player)
@@ -149,11 +129,9 @@ public class GameManager : PersistentSingleton<GameManager>
 		if (_PlayerSpawner)
 			_PlayerSpawner.Spawn(Player.transform, true);
 		else
-		{
-			Debug.Log("<color=yellow>Player spawner was not found " +
-			          "in the scene.</color>");
-		}
+			Debug.Log("<color=yellow>Player spawner was not found in the scene. Using default position.</color>");
 	}
+
 
 	public enum GameState
 	{
@@ -161,7 +139,7 @@ public class GameManager : PersistentSingleton<GameManager>
 		Playing = 1,
 		Talking = 2,
 		Pause = 3,
-		Menu = 4
+		Menu = 4,
 	}
 }
 }

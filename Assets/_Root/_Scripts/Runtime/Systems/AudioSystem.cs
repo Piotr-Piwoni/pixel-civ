@@ -1,14 +1,14 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using PROJECTNAME.Utilities;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Pool;
 using Debug = UnityEngine.Debug;
 
-namespace PROJECTNAME.Systems
+namespace PixelCiv.Systems
 {
 [RequireComponent(typeof(AudioSource))]
 public class AudioSystem : Singleton<AudioSystem>

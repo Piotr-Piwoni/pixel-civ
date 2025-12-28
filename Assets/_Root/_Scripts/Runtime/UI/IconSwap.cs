@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using DeviceType = PROJECTNAME.Managers.DeviceType;
+using DeviceType = PixelCiv.Managers.DeviceType;
 
-namespace PROJECTNAME.UI
+namespace PixelCiv.UI
 {
 public class IconSwap : UIInputReactiveBase
 {

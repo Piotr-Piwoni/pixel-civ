@@ -1,8 +1,8 @@
-﻿using PROJECTNAME.Managers;
+using PixelCiv.Managers;
 using UnityEngine;
-using DeviceType = PROJECTNAME.Managers.DeviceType;
+using DeviceType = PixelCiv.Managers.DeviceType;
 
-namespace PROJECTNAME.UI
+namespace PixelCiv.UI
 {
 public abstract class UIInputReactiveBase : MonoBehaviour
 {
