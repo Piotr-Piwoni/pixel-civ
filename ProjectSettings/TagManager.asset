@@ -10,9 +10,10 @@ TagManager:
   - LightsGroup
   - CameraGroup
   - MiscGroup
-  - Manager
-  - System
   - Spawner
+  - ManagersGroup
+  - Systems
+  - Unit
   layers:
   - Default
   - TransparentFX

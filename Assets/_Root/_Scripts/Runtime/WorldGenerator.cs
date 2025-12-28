@@ -74,7 +74,6 @@ public class WorldGenerator : MonoBehaviour
 		}
 
 		// Decide player capital placement.
-		Vector3Int CapitalPosition = GameManager.Instance.PlayerCapitalPosition;
 		do
 		{
 			int x = Random.Range(0, _WorldSize.x);
@@ -87,7 +86,8 @@ public class WorldGenerator : MonoBehaviour
 			GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
 
 			// Spawner a player spawner.
-			Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(CapitalPosition);
+			Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(GameManager.Instance
+																			.PlayerCapitalPosition);
 			spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
 			_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
 
@@ -100,7 +100,7 @@ public class WorldGenerator : MonoBehaviour
 
 		// Render.
 		_GroundTilemap.SetTilesBlock(bounds, tiles);
-		_DetailsTilemap.SetTile(CapitalPosition, _CastleTile);
+		_DetailsTilemap.SetTile(GameManager.Instance.PlayerCapitalPosition, _CastleTile);
 	}
 }
 }
