@@ -1,6 +1,6 @@
 using UnityEngine.SceneManagement;
 
-namespace PROJECTNAME.Interfaces
+namespace PixelCiv.Interfaces
 {
 public interface ISceneChangeHandler
 {

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using PROJECTNAME.Utilities;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-namespace PROJECTNAME.Managers
+namespace PixelCiv.Managers
 {
 public class InputManager : PersistentSingleton<InputManager>
 {

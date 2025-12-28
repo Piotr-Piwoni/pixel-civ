@@ -1,10 +1,10 @@
 using System;
-using PROJECTNAME.Managers;
+using PixelCiv.Managers;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DeviceType = PROJECTNAME.Managers.DeviceType;
+using DeviceType = PixelCiv.Managers.DeviceType;
 
-namespace PROJECTNAME
+namespace PixelCiv
 {
 public class PlayerController : MonoBehaviour
 {

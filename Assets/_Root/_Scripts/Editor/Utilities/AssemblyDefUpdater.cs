@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace PROJECTNAME.Editor.Utilities
+namespace PixelCiv.Editor.Utilities
 {
 public static class AssemblyDefUpdater
 {

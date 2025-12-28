@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using PROJECTNAME.UI;
-using PROJECTNAME.Utilities;
+using PixelCiv.UI;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace PROJECTNAME.Managers
+namespace PixelCiv.Managers
 {
 public class UIManager : Singleton<UIManager>
 {

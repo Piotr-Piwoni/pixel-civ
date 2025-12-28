@@ -1,8 +1,8 @@
-﻿using Sirenix.OdinInspector;
+using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace PROJECTNAME
+namespace PixelCiv
 {
 [ExecuteInEditMode]
 public class Spawner : MonoBehaviour

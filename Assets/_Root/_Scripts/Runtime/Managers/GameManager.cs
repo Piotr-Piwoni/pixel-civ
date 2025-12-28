@@ -1,11 +1,11 @@
-﻿using PROJECTNAME.Systems;
-using PROJECTNAME.Utilities;
+using PixelCiv.Systems;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace PROJECTNAME.Managers
+namespace PixelCiv.Managers
 {
 public class GameManager : PersistentSingleton<GameManager>
 {
