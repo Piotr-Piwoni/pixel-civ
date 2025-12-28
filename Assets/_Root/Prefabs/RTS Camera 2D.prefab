@@ -199,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Project::PROJECTNAME.PlayerController
   _MoveSpeed: 5
+  _SprintMult: 2.5
 --- !u!81 &4584307023136097162
 AudioListener:
   m_ObjectHideFlags: 0

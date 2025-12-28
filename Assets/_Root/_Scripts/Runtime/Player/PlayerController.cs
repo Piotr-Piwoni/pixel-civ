@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
 {
 	[SerializeField, Header("Movement Settings"), Tooltip("Speed of the player movement"),]
 	private float _MoveSpeed = 5f;
+	[SerializeField, Tooltip("Speed multiplier applied when the player is sprinting."),]
+	private float _SprintMult = 1.5f;
 
 	private Camera _Camera;
 
@@ -65,8 +67,14 @@ public class PlayerController : MonoBehaviour
 
 	private void MoveCharacter(Vector2 move)
 	{
-		if (!_Camera) return;
-		Vector3 movement = move * (_MoveSpeed * Time.deltaTime);
+		if (!_Camera)
+			return;
+
+		float speed = _MoveSpeed;
+		if (InputManager.Instance.IsSprinting)
+			speed *= _SprintMult;
+
+		Vector3 movement = move * (speed * Time.deltaTime);
 		transform.Translate(movement, Space.World);
 	}
 }
