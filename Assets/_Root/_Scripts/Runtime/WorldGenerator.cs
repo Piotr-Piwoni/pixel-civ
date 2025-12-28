@@ -12,6 +12,10 @@ public class WorldGenerator : MonoBehaviour
 	private Tilemap _GroundTilemap;
 	[SerializeField]
 	private TileBase _GroundTile;
+	[SerializeField, MinValue(0f),]
+	private float _NoiseScale = 2f;
+	[SerializeField, Range(0f, 1f),]
+	private float _ThreshHold = 0.5f;
 
 
 	private void Start()
@@ -19,8 +23,16 @@ public class WorldGenerator : MonoBehaviour
 		GenerateWorld();
 	}
 
+	[Button]
+	private void Clear()
+	{
+		_GroundTilemap?.ClearAllTiles();
+	}
+
+	[Button("Generate")]
 	private void GenerateWorld()
 	{
+		Random.InitState(Time.frameCount);
 		_GroundTilemap.ClearAllTiles();
 
 		BoundsInt bounds = new(0, 0, 0, _WorldSize.x, _WorldSize.y, 1);
@@ -29,8 +41,10 @@ public class WorldGenerator : MonoBehaviour
 		for (var y = 0; y < _WorldSize.y; y++)
 		for (var x = 0; x < _WorldSize.x; x++)
 		{
+			float noise = Mathf.PerlinNoise(x * _NoiseScale, y * _NoiseScale);
+
 			int index = y * _WorldSize.x + x;
-			tiles[index] = _GroundTile;
+			tiles[index] = noise > _ThreshHold ? _GroundTile : null;
 		}
 
 		_GroundTilemap.SetTilesBlock(bounds, tiles);
