@@ -17,32 +17,32 @@ public class InputManager : PersistentSingleton<InputManager>
 	public event Action<DeviceType> OnDeviceChanged;
 
 	[TabGroup("", "Info", SdfIconType.QuestionSquareFill,
-		 TextColor = "lightblue"), ShowInInspector, ReadOnly]
+				 TextColor = "lightblue"), ShowInInspector, ReadOnly,]
 	public DeviceType CurrentDeviceType { get; private set; } =
 		DeviceType.Unknown;
 
 	public Vector2 LookInput { get; private set; } = Vector2.zero;
 	public Vector2 MoveInput { get; private set; } = Vector2.zero;
 
-	[SerializeField, TabGroup("", "Info"), ReadOnly]
+	[SerializeField, TabGroup("", "Info"), ReadOnly,]
 	private PlayerInput _PlayerInput;
 
 	[SerializeField,
 	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),
-	 FoldoutGroup("/Settings/Input References")]
+	 FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _MoveAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _LookAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _JumpAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _AttackAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References")]
+	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _InteractionAction;
 
-	[SerializeField, FoldoutGroup("/Settings/Action Maps")]
+	[SerializeField, FoldoutGroup("/Settings/Action Maps"),]
 	private string _GameplayActionMap = "Gameplay";
-	[SerializeField, FoldoutGroup("/Settings/Action Maps")]
+	[SerializeField, FoldoutGroup("/Settings/Action Maps"),]
 	private string _UIActionMap = "UI";
 
 	private Action<InputAction.CallbackContext> _attackCallback;
@@ -54,16 +54,6 @@ public class InputManager : PersistentSingleton<InputManager>
 	protected override void Awake()
 	{
 		base.Awake();
-
-		// Obtain the PlayerInput component from the player object.
-		if (GameManager.Instance.Player)
-			_PlayerInput = GameManager.Instance.Player.GetComponent<PlayerInput>();
-		if (!_PlayerInput)
-		{
-			Debug.LogError("PlayerInput not found on player object!");
-			return;
-		}
-
 		InitializeActionMaps();
 	}
 
@@ -96,6 +86,13 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 	}
 
+	public void SetPlayerInput(PlayerInput playerInput)
+	{
+		_PlayerInput = playerInput;
+		_PlayerInput.onControlsChanged += OnControlsChanged;
+		UpdateCurrentDeviceType(_PlayerInput.currentControlScheme);
+	}
+
 	/// <summary>
 	///     Switch the currently in-use action map to a new one.
 	/// </summary>
@@ -109,7 +106,7 @@ public class InputManager : PersistentSingleton<InputManager>
 		}
 
 		if (_ActionMapDictionary.TryGetValue(actionMap,
-			    out var actionMapName))
+											 out string actionMapName))
 			_PlayerInput.SwitchCurrentActionMap(actionMapName);
 		else
 			Debug.LogError($"No action map found for \"{actionMap}\"");
@@ -158,7 +155,7 @@ public class InputManager : PersistentSingleton<InputManager>
 		_ActionMapDictionary = new Dictionary<ActionMap, string>
 		{
 			{ ActionMap.Gameplay, _GameplayActionMap },
-			{ ActionMap.UI, _UIActionMap }
+			{ ActionMap.UI, _UIActionMap },
 		};
 	}
 
@@ -202,6 +199,9 @@ public class InputManager : PersistentSingleton<InputManager>
 		_AttackAction.action.performed -= _attackCallback;
 		_InteractionAction.action.performed -= _interactionCallback;
 
+		if (_PlayerInput)
+			_PlayerInput.onControlsChanged -= OnControlsChanged;
+
 		DisableAllActions();
 	}
 
@@ -213,7 +213,7 @@ public class InputManager : PersistentSingleton<InputManager>
 		{
 			"Keyboard&Mouse" => DeviceType.KeyboardMouse,
 			"Gamepad" => DeviceType.Gamepad,
-			_ => DeviceType.Unknown
+			_ => DeviceType.Unknown,
 		};
 
 		if (newDevice == CurrentDeviceType)
@@ -227,13 +227,13 @@ public class InputManager : PersistentSingleton<InputManager>
 public enum ActionMap
 {
 	Gameplay = 0,
-	UI = 1
+	UI = 1,
 }
 
 public enum DeviceType
 {
 	Unknown = -1,
 	KeyboardMouse = 0,
-	Gamepad = 1
+	Gamepad = 1,
 }
 }
