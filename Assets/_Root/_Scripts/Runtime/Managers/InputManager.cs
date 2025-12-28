@@ -28,8 +28,7 @@ public class InputManager : PersistentSingleton<InputManager>
 	[SerializeField, TabGroup("", "Info"), ReadOnly,]
 	private PlayerInput _PlayerInput;
 
-	[SerializeField,
-	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),
+	[SerializeField, TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),
 	 FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _MoveAction;
 	[SerializeField, FoldoutGroup("/Settings/Input References"),]
@@ -60,19 +59,12 @@ public class InputManager : PersistentSingleton<InputManager>
 		InitializeActionMaps();
 	}
 
-	private void Start()
-	{
-		// Enable the player once the Input Manager initializes.
-		if (GameManager.Instance.Player)
-			GameManager.Instance.Player.SetActive(true);
-	}
-
 	public override void OnEnable()
 	{
 		base.OnEnable();
 		BindInput();
-		if (!_PlayerInput)
-			return;
+
+		if (!_PlayerInput) return;
 		_PlayerInput.onControlsChanged += OnControlsChanged;
 		UpdateCurrentDeviceType(_PlayerInput.currentControlScheme);
 	}
@@ -81,6 +73,7 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 		base.OnDisable();
 		UnbindInput();
+
 		if (_PlayerInput)
 			_PlayerInput.onControlsChanged -= OnControlsChanged;
 	}
@@ -91,6 +84,9 @@ public class InputManager : PersistentSingleton<InputManager>
 
 	public void SetPlayerInput(PlayerInput playerInput)
 	{
+		if (!playerInput)
+			return;
+
 		_PlayerInput = playerInput;
 		_PlayerInput.onControlsChanged += OnControlsChanged;
 		UpdateCurrentDeviceType(_PlayerInput.currentControlScheme);
@@ -123,13 +119,10 @@ public class InputManager : PersistentSingleton<InputManager>
 		_SprintAction.action.performed += OnSprintPressed;
 		_SprintAction.action.canceled += OnSprintCanceled;
 
-
 		_JumpCallback = _ => OnJumpPressed?.Invoke();
 		_JumpAction.action.performed += _JumpCallback;
-
 		_AttackCallback = _ => OnAttackPressed?.Invoke();
 		_AttackAction.action.performed += _AttackCallback;
-
 		_InteractionCallback = _ => OnInteractionPressed?.Invoke();
 		_InteractionAction.action.performed += _InteractionCallback;
 
@@ -168,8 +161,7 @@ public class InputManager : PersistentSingleton<InputManager>
 	/// Handles changing the control scheme.
 	private void OnControlsChanged(PlayerInput input)
 	{
-		if (input.currentControlScheme == null)
-			return;
+		if (input.currentControlScheme == null) return;
 		UpdateCurrentDeviceType(input.currentControlScheme);
 	}
 
@@ -234,8 +226,7 @@ public class InputManager : PersistentSingleton<InputManager>
 			_ => DeviceType.Unknown,
 		};
 
-		if (newDevice == CurrentDeviceType)
-			return;
+		if (newDevice == CurrentDeviceType) return;
 		CurrentDeviceType = newDevice;
 		Debug.Log($"Device Changed: <color=red>{CurrentDeviceType}</color>");
 		OnDeviceChanged?.Invoke(CurrentDeviceType);
