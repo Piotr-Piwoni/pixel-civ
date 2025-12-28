@@ -11,11 +11,11 @@ public class GameManager : PersistentSingleton<GameManager>
 	[TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),
 	 ShowInInspector, ReadOnly,]
 	public Camera Camera { get; private set; }
-	public GameObject ActorGroup { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
 	public GameObject Player { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly, PropertyOrder(-1f),]
 	public GameState CurrentState { get; private set; } = GameState.Playing;
+	public Grid Grid => _Grid;
 	public Transform ActorsGroup { get; private set; }
 	public Transform ManagersGroup { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
@@ -25,6 +25,10 @@ public class GameManager : PersistentSingleton<GameManager>
 	private GameObject _PlayerPrefab;
 	[SerializeField, TabGroup("", "Settings"),]
 	private AudioClip _MusicClip;
+	[SerializeField, TabGroup("", "Settings"),]
+	private GameObject _UnitManagerPrefab;
+	[SerializeField, TabGroup("", "Settings"),]
+	private Grid _Grid;
 
 	private bool _DelayPlayerInit;
 	private GameState _PreviousState;
@@ -64,8 +68,12 @@ public class GameManager : PersistentSingleton<GameManager>
 			// Logic for when the game is in the Main Menu.
 			break;
 		case GameState.Playing:
-			// Logic for when the game is actually playing.
+		{
+			if (Input.GetKeyDown(KeyCode.U) && UnitManager.Instance)
+				UnitManager.Instance.CreateUnit(PlayerCapitalPosition + Vector3Int.up, Color.blue);
+
 			break;
+		}
 		case GameState.Talking:
 			// Logic for when talking occurs in the game.
 			break;
