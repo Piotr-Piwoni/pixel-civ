@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using PixelCiv.Managers;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -41,11 +42,7 @@ public class WorldGenerator : MonoBehaviour
 		_GroundTilemap?.ClearAllTiles();
 		_DetailsTilemap?.ClearAllTiles();
 		_HasChosenCapitalTile = false;
-		#if UNITY_EDITOR
-		DestroyImmediate(_PlayerSpawner);
-		#else
 		Destroy(_PlayerSpawner);
-		#endif
 	}
 
 	[Button("Generate")]
@@ -57,8 +54,7 @@ public class WorldGenerator : MonoBehaviour
 		Clear();
 
 		// Create world data.
-		var seed = (int)DateTime.Now.TimeOfDay.TotalSeconds;
-		Random.InitState(seed);
+		Random.InitState(Environment.TickCount);
 
 		BoundsInt bounds = new(0, 0, 0, _WorldSize.x, _WorldSize.y, 1);
 		int totalWorldSize = _WorldSize.x * _WorldSize.y;
@@ -74,17 +70,24 @@ public class WorldGenerator : MonoBehaviour
 		}
 
 		// Decide player capital placement.
-		do
+		int[] randomTiles = Enumerable.Range(0, totalWorldSize).OrderBy(_ => Random.value).ToArray();
+		foreach (int index in randomTiles)
 		{
-			int x = Random.Range(0, _WorldSize.x);
-			int y = Random.Range(0, _WorldSize.y);
-			int index = y * _WorldSize.x + x;
 			if (!tiles[index]) continue;
+
+			int x = index % _WorldSize.x;
+			int y = index / _WorldSize.x;
 
 			// Spawn player capital.
 			_HasChosenCapitalTile = true;
 			GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
+			break;
+		}
 
+		if (!_HasChosenCapitalTile)
+			Debug.LogWarning("There is no valid tile to spawn the player city in!");
+		else
+		{
 			// Spawner a player spawner.
 			Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(GameManager.Instance
 																			.PlayerCapitalPosition);
@@ -96,11 +99,11 @@ public class WorldGenerator : MonoBehaviour
 			spawnerComp.SpawnerTag = SpawnerTag.Player;
 			// Spawn player.
 			spawnerComp.Spawn(GameManager.Instance.Player.transform);
-		} while (!_HasChosenCapitalTile);
 
-		// Render.
+			_DetailsTilemap.SetTile(GameManager.Instance.PlayerCapitalPosition, _CastleTile);
+		}
+
 		_GroundTilemap.SetTilesBlock(bounds, tiles);
-		_DetailsTilemap.SetTile(GameManager.Instance.PlayerCapitalPosition, _CastleTile);
 	}
 }
 }

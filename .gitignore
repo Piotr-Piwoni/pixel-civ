@@ -104,3 +104,5 @@ fabric.properties
 LastProductName.txt
 Assets/_Root/_Scripts/Editor/LastProductName.txt.meta
 Assets/_Root/_Scripts/Runtime/.idea/discord.xml
+Assets/_Recovery/
+Assets/_Recovery.meta
