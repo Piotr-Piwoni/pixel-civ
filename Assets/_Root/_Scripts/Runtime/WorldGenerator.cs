@@ -27,7 +27,6 @@ public class WorldGenerator : MonoBehaviour
 	[SerializeField]
 	private GameObject _SpawnerPrefab;
 
-	private bool _HasChosenCapitalTile;
 	private GameObject _PlayerSpawner;
 
 
@@ -41,8 +40,8 @@ public class WorldGenerator : MonoBehaviour
 	{
 		_GroundTilemap?.ClearAllTiles();
 		_DetailsTilemap?.ClearAllTiles();
-		_HasChosenCapitalTile = false;
-		Destroy(_PlayerSpawner);
+		if (Application.isPlaying)
+			Destroy(_PlayerSpawner);
 	}
 
 	[Button("Generate")]
@@ -69,38 +68,42 @@ public class WorldGenerator : MonoBehaviour
 			tiles[index] = noise > _ThreshHold ? _GroundTile : null;
 		}
 
-		// Decide player capital placement.
-		int[] randomTiles = Enumerable.Range(0, totalWorldSize).OrderBy(_ => Random.value).ToArray();
-		foreach (int index in randomTiles)
+		if (Application.isPlaying)
 		{
-			if (!tiles[index]) continue;
+			// Decide player capital placement.
+			int[] randomTiles = Enumerable.Range(0, totalWorldSize).OrderBy(_ => Random.value).ToArray();
+			var hasChosenCapitalTile = false;
+			foreach (int index in randomTiles)
+			{
+				if (!tiles[index]) continue;
 
-			int x = index % _WorldSize.x;
-			int y = index / _WorldSize.x;
+				int x = index % _WorldSize.x;
+				int y = index / _WorldSize.x;
 
-			// Spawn player capital.
-			_HasChosenCapitalTile = true;
-			GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
-			break;
-		}
+				// Spawn player capital.
+				hasChosenCapitalTile = true;
+				GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
+				break;
+			}
 
-		if (!_HasChosenCapitalTile)
-			Debug.LogWarning("There is no valid tile to spawn the player city in!");
-		else
-		{
-			// Spawner a player spawner.
-			Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(GameManager.Instance
-																			.PlayerCapitalPosition);
-			spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
-			_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
+			if (!hasChosenCapitalTile)
+				Debug.LogWarning("There is no valid tile to spawn the player city in!");
+			else
+			{
+				// Spawner a player spawner.
+				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(GameManager.Instance
+						 .PlayerCapitalPosition);
+				spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
+				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
 
-			// Setup spawner.
-			var spawnerComp = _PlayerSpawner.GetComponent<Spawner>();
-			spawnerComp.SpawnerTag = SpawnerTag.Player;
-			// Spawn player.
-			spawnerComp.Spawn(GameManager.Instance.Player.transform);
+				// Setup spawner.
+				var spawnerComp = _PlayerSpawner.GetComponent<Spawner>();
+				spawnerComp.SpawnerTag = SpawnerTag.Player;
+				// Spawn player.
+				spawnerComp.Spawn(GameManager.Instance.Player.transform);
 
-			_DetailsTilemap.SetTile(GameManager.Instance.PlayerCapitalPosition, _CastleTile);
+				_DetailsTilemap.SetTile(GameManager.Instance.PlayerCapitalPosition, _CastleTile);
+			}
 		}
 
 		_GroundTilemap.SetTilesBlock(bounds, tiles);

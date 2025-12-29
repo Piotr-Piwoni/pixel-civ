@@ -1,0 +1,68 @@
+:root {
+}
+
+.button {
+    background-color: rgb(65, 75, 135);
+    -unity-text-generator: advanced;
+    -unity-text-auto-size: best-fit 10px 45px;
+    color: rgb(236, 236, 236);
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+    border-left-color: rgb(236, 178, 43);
+    border-right-color: rgb(236, 178, 43);
+    border-top-color: rgb(236, 178, 43);
+    border-bottom-color: rgb(236, 178, 43);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out-back;
+}
+
+.button:hover {
+    background-color: rgb(65, 75, 135);
+    -unity-text-generator: advanced;
+    -unity-text-auto-size: best-fit 10px 45px;
+    color: rgb(236, 236, 236);
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+    border-left-color: rgb(236, 178, 43);
+    border-right-color: rgb(236, 178, 43);
+    border-top-color: rgb(236, 178, 43);
+    border-bottom-color: rgb(236, 178, 43);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    scale: 1.05 1.05 1.05;
+    transition-property: scale;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-in-out-back;
+}
+
+.button:active {
+    background-color: rgb(65, 75, 135);
+    -unity-text-generator: advanced;
+    -unity-text-auto-size: best-fit 10px 45px;
+    color: rgb(236, 236, 236);
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-bottom-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+    border-left-color: rgb(236, 178, 43);
+    border-right-color: rgb(236, 178, 43);
+    border-top-color: rgb(236, 178, 43);
+    border-bottom-color: rgb(236, 178, 43);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 3px;
+    border-left-width: 3px;
+    transition-duration: 0.25s;
+    transition-timing-function: ease-in-out-back;
+    scale: 0.95 0.95 0.95;
+}

@@ -26,14 +26,6 @@ public class PlayerController : MonoBehaviour
 	{
 		Vector2 moveInput = InputManager.Instance.MoveInput;
 		MoveCharacter(moveInput);
-
-		if (Mouse.current.rightButton.wasPressedThisFrame && UnitManager.Instance)
-		{
-			Vector3 mouseWorldPos = _Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-			mouseWorldPos.z = 0f;
-			Vector3Int cellPos = GameManager.Instance.Grid.WorldToCell(mouseWorldPos);
-			UnitManager.Instance.CreateUnit(cellPos, Color.blue);
-		}
 	}
 
 	private void OnEnable()
