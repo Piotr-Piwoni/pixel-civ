@@ -26,11 +26,19 @@ public class PlayerController : MonoBehaviour
 	{
 		Vector2 moveInput = InputManager.Instance.MoveInput;
 		MoveCharacter(moveInput);
+
+		if (Mouse.current.rightButton.wasPressedThisFrame && UnitManager.Instance)
+		{
+			Vector3 mouseWorldPos = _Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+			mouseWorldPos.z = 0f;
+			Vector3Int cellPos = GameManager.Instance.Grid.WorldToCell(mouseWorldPos);
+			UnitManager.Instance.CreateUnit(cellPos, Color.blue);
+		}
 	}
 
 	private void OnEnable()
 	{
-		InputManager.Instance.OnInteractionPressed += HandleInteraction;
+		InputManager.Instance.OnInteractionPressed += OnSelect;
 		InputManager.Instance.OnDeviceChanged += HandleDeviceChanged;
 	}
 
@@ -38,7 +46,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!InputManager.Instance) return;
 
-		InputManager.Instance.OnInteractionPressed -= HandleInteraction;
+		InputManager.Instance.OnInteractionPressed -= OnSelect;
 		InputManager.Instance.OnDeviceChanged -= HandleDeviceChanged;
 	}
 
@@ -60,11 +68,6 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void HandleInteraction()
-	{
-		Debug.Log("Interaction Pressed!");
-	}
-
 	private void MoveCharacter(Vector2 move)
 	{
 		if (!_Camera)
@@ -76,6 +79,11 @@ public class PlayerController : MonoBehaviour
 
 		Vector3 movement = move * (speed * Time.deltaTime);
 		transform.Translate(movement, Space.World);
+	}
+
+	private void OnSelect()
+	{
+		Debug.Log("Selected!");
 	}
 }
 }

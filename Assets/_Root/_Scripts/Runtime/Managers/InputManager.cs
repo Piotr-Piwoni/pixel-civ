@@ -10,24 +10,20 @@ namespace PixelCiv.Managers
 {
 public class InputManager : PersistentSingleton<InputManager>
 {
-	public event Action OnAttackPressed;
 	public event Action OnInteractionPressed;
 	public event Action OnJumpPressed;
 	public event Action OnMovePressed;
 	public event Action<DeviceType> OnDeviceChanged;
 
 	public bool IsSprinting { get; private set; }
-
 	[TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),
 	 ShowInInspector, ReadOnly,]
 	public DeviceType CurrentDeviceType { get; private set; } = DeviceType.Unknown;
-
 	public Vector2 LookInput { get; private set; } = Vector2.zero;
 	public Vector2 MoveInput { get; private set; } = Vector2.zero;
 
 	[SerializeField, TabGroup("", "Info"), ReadOnly,]
 	private PlayerInput _PlayerInput;
-
 	[SerializeField, TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),
 	 FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _MoveAction;
@@ -35,8 +31,6 @@ public class InputManager : PersistentSingleton<InputManager>
 	private InputActionReference _LookAction;
 	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _JumpAction;
-	[SerializeField, FoldoutGroup("/Settings/Input References"),]
-	private InputActionReference _AttackAction;
 	[SerializeField, FoldoutGroup("/Settings/Input References"),]
 	private InputActionReference _InteractionAction;
 	[SerializeField, FoldoutGroup("/Settings/Input References"),]
@@ -47,7 +41,6 @@ public class InputManager : PersistentSingleton<InputManager>
 	[SerializeField, FoldoutGroup("/Settings/Action Maps"),]
 	private string _UIActionMap = "UI";
 
-	private Action<InputAction.CallbackContext> _AttackCallback;
 	private Action<InputAction.CallbackContext> _InteractionCallback;
 	private Action<InputAction.CallbackContext> _JumpCallback;
 	private Dictionary<ActionMap, string> _ActionMapDictionary;
@@ -121,8 +114,6 @@ public class InputManager : PersistentSingleton<InputManager>
 
 		_JumpCallback = _ => OnJumpPressed?.Invoke();
 		_JumpAction.action.performed += _JumpCallback;
-		_AttackCallback = _ => OnAttackPressed?.Invoke();
-		_AttackAction.action.performed += _AttackCallback;
 		_InteractionCallback = _ => OnInteractionPressed?.Invoke();
 		_InteractionAction.action.performed += _InteractionCallback;
 
@@ -133,7 +124,6 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 		_MoveAction.action.Disable();
 		_JumpAction.action.Disable();
-		_AttackAction.action.Disable();
 		_InteractionAction.action.Disable();
 		_SprintAction.action.Disable();
 	}
@@ -142,7 +132,6 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 		_MoveAction.action.Enable();
 		_JumpAction.action.Enable();
-		_AttackAction.action.Enable();
 		_InteractionAction.action.Enable();
 		_SprintAction.action.Enable();
 	}
@@ -206,7 +195,6 @@ public class InputManager : PersistentSingleton<InputManager>
 		_SprintAction.action.canceled -= OnSprintCanceled;
 
 		_JumpAction.action.performed -= _JumpCallback;
-		_AttackAction.action.performed -= _AttackCallback;
 		_InteractionAction.action.performed -= _InteractionCallback;
 
 		if (_PlayerInput)

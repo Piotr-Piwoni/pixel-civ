@@ -2,6 +2,7 @@ using PixelCiv.Systems;
 using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 namespace PixelCiv.Managers
@@ -69,7 +70,7 @@ public class GameManager : PersistentSingleton<GameManager>
 			break;
 		case GameState.Playing:
 		{
-			if (Input.GetKeyDown(KeyCode.U) && UnitManager.Instance)
+			if (Keyboard.current.uKey.wasPressedThisFrame && UnitManager.Instance)
 				UnitManager.Instance.CreateUnit(PlayerCapitalPosition + Vector3Int.up, Color.blue);
 
 			break;
