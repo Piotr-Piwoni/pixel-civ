@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
 	private void OnEnable()
 	{
-		InputManager.Instance.OnInteractionPressed += HandleInteraction;
+		InputManager.Instance.OnInteractionPressed += OnSelect;
 		InputManager.Instance.OnDeviceChanged += HandleDeviceChanged;
 	}
 
@@ -38,7 +38,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (!InputManager.Instance) return;
 
-		InputManager.Instance.OnInteractionPressed -= HandleInteraction;
+		InputManager.Instance.OnInteractionPressed -= OnSelect;
 		InputManager.Instance.OnDeviceChanged -= HandleDeviceChanged;
 	}
 
@@ -60,11 +60,6 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void HandleInteraction()
-	{
-		Debug.Log("Interaction Pressed!");
-	}
-
 	private void MoveCharacter(Vector2 move)
 	{
 		if (!_Camera)
@@ -76,6 +71,11 @@ public class PlayerController : MonoBehaviour
 
 		Vector3 movement = move * (speed * Time.deltaTime);
 		transform.Translate(movement, Space.World);
+	}
+
+	private void OnSelect()
+	{
+		Debug.Log("Selected!");
 	}
 }
 }

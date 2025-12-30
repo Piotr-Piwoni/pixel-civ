@@ -11,11 +11,13 @@ public class GameManager : PersistentSingleton<GameManager>
 	[TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),
 	 ShowInInspector, ReadOnly,]
 	public Camera Camera { get; private set; }
-	public GameObject ActorGroup { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
 	public GameObject Player { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly, PropertyOrder(-1f),]
 	public GameState CurrentState { get; private set; } = GameState.Playing;
+	public Grid Grid => _Grid;
+	public Transform ActorsGroup { get; private set; }
+	public Transform ManagersGroup { get; private set; }
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
 	public Vector3Int PlayerCapitalPosition { get; private set; }
 
@@ -23,6 +25,10 @@ public class GameManager : PersistentSingleton<GameManager>
 	private GameObject _PlayerPrefab;
 	[SerializeField, TabGroup("", "Settings"),]
 	private AudioClip _MusicClip;
+	[SerializeField, TabGroup("", "Settings"),]
+	private GameObject _UnitManagerPrefab;
+	[SerializeField, TabGroup("", "Settings"),]
+	private Grid _Grid;
 
 	private bool _DelayPlayerInit;
 	private GameState _PreviousState;
@@ -34,13 +40,15 @@ public class GameManager : PersistentSingleton<GameManager>
 		base.Awake();
 		_PreviousState = CurrentState;
 
-		TryGetPlayer();
+		GetGroups();
 	}
 
 	private void Start()
 	{
-		// Hide the cursor on game start.
-		Cursor.lockState = CursorLockMode.Locked;
+		// Create the Unit Manager.
+		Instantiate(_UnitManagerPrefab, ManagersGroup);
+
+		TryGetPlayer();
 
 		// If a music clip is provided, play the music.
 		if (_MusicClip)
@@ -52,6 +60,7 @@ public class GameManager : PersistentSingleton<GameManager>
 		if (_DelayPlayerInit && InputManager.Instance)
 			HandlePlayerInit();
 
+		if (!Player) return;
 		// Handle game functionality differently based on current state.
 		switch (CurrentState)
 		{
@@ -59,8 +68,9 @@ public class GameManager : PersistentSingleton<GameManager>
 			// Logic for when the game is in the Main Menu.
 			break;
 		case GameState.Playing:
-			// Logic for when the game is actually playing.
+		{
 			break;
+		}
 		case GameState.Talking:
 			// Logic for when talking occurs in the game.
 			break;
@@ -88,12 +98,31 @@ public class GameManager : PersistentSingleton<GameManager>
 		PlayerCapitalPosition = position;
 	}
 
+	private void GetGroups()
+	{
+		// If the Actors group was not found create it.
+		ActorsGroup = GameObject.FindGameObjectWithTag("ActorGroup")?.transform;
+		if (!ActorsGroup)
+			ActorsGroup = new GameObject("Actors")
+			{
+				tag = "ActorGroup",
+			}.transform;
+
+		// If the Managers group was not found create it.
+		ManagersGroup = GameObject.FindGameObjectWithTag("ManagersGroup")?.transform;
+		if (!ManagersGroup)
+			ManagersGroup = new GameObject("Managers & Systems")
+			{
+				tag = "ManagersGroup",
+			}.transform;
+	}
+
 	private void HandlePlayerInit()
 	{
 		// Attempt to create a player if possible.
 		if (!Player)
 		{
-			Player = Instantiate(_PlayerPrefab, ActorGroup.transform);
+			Player = Instantiate(_PlayerPrefab, ActorsGroup.transform);
 			_DelayPlayerInit = false;
 		}
 
@@ -116,19 +145,11 @@ public class GameManager : PersistentSingleton<GameManager>
 
 	private void TryGetPlayer()
 	{
-		// If the actor group was not found create it.
-		ActorGroup = GameObject.FindGameObjectWithTag("ActorGroup");
-		if (!ActorGroup)
-			ActorGroup = new GameObject("Actor Group")
-			{
-				tag = "ActorGroup",
-			};
-
 		// Try to get existing player.
 		Player = GameObject.FindGameObjectWithTag("Player");
 		if (Player)
 		{
-			Player.transform.SetParent(ActorGroup.transform);
+			Player.transform.SetParent(ActorsGroup.transform);
 			HandlePlayerInit();
 			return;
 		}

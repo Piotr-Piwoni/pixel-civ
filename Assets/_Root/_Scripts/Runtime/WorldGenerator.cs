@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using PixelCiv.Managers;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -26,7 +27,6 @@ public class WorldGenerator : MonoBehaviour
 	[SerializeField]
 	private GameObject _SpawnerPrefab;
 
-	private bool _HasChosenCapitalTile;
 	private GameObject _PlayerSpawner;
 
 
@@ -40,12 +40,8 @@ public class WorldGenerator : MonoBehaviour
 	{
 		_GroundTilemap?.ClearAllTiles();
 		_DetailsTilemap?.ClearAllTiles();
-		_HasChosenCapitalTile = false;
-		#if UNITY_EDITOR
-		DestroyImmediate(_PlayerSpawner);
-		#else
-		Destroy(_PlayerSpawner);
-		#endif
+		if (Application.isPlaying)
+			Destroy(_PlayerSpawner);
 	}
 
 	[Button("Generate")]
@@ -57,8 +53,7 @@ public class WorldGenerator : MonoBehaviour
 		Clear();
 
 		// Create world data.
-		var seed = (int)DateTime.Now.TimeOfDay.TotalSeconds;
-		Random.InitState(seed);
+		Random.InitState(Environment.TickCount);
 
 		BoundsInt bounds = new(0, 0, 0, _WorldSize.x, _WorldSize.y, 1);
 		int totalWorldSize = _WorldSize.x * _WorldSize.y;
@@ -73,34 +68,45 @@ public class WorldGenerator : MonoBehaviour
 			tiles[index] = noise > _ThreshHold ? _GroundTile : null;
 		}
 
-		// Decide player capital placement.
-		Vector3Int CapitalPosition = GameManager.Instance.PlayerCapitalPosition;
-		do
+		if (Application.isPlaying)
 		{
-			int x = Random.Range(0, _WorldSize.x);
-			int y = Random.Range(0, _WorldSize.y);
-			int index = y * _WorldSize.x + x;
-			if (!tiles[index]) continue;
+			// Decide player capital placement.
+			int[] randomTiles = Enumerable.Range(0, totalWorldSize).OrderBy(_ => Random.value).ToArray();
+			var hasChosenCapitalTile = false;
+			foreach (int index in randomTiles)
+			{
+				if (!tiles[index]) continue;
 
-			// Spawn player capital.
-			_HasChosenCapitalTile = true;
-			GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
+				int x = index % _WorldSize.x;
+				int y = index / _WorldSize.x;
 
-			// Spawner a player spawner.
-			Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(CapitalPosition);
-			spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
-			_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
+				// Spawn player capital.
+				hasChosenCapitalTile = true;
+				GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
+				break;
+			}
 
-			// Setup spawner.
-			var spawnerComp = _PlayerSpawner.GetComponent<Spawner>();
-			spawnerComp.SpawnerTag = SpawnerTag.Player;
-			// Spawn player.
-			spawnerComp.Spawn(GameManager.Instance.Player.transform);
-		} while (!_HasChosenCapitalTile);
+			if (!hasChosenCapitalTile)
+				Debug.LogWarning("There is no valid tile to spawn the player city in!");
+			else
+			{
+				// Spawner a player spawner.
+				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(GameManager.Instance
+						 .PlayerCapitalPosition);
+				spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
+				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
 
-		// Render.
+				// Setup spawner.
+				var spawnerComp = _PlayerSpawner.GetComponent<Spawner>();
+				spawnerComp.SpawnerTag = SpawnerTag.Player;
+				// Spawn player.
+				spawnerComp.Spawn(GameManager.Instance.Player.transform);
+
+				_DetailsTilemap.SetTile(GameManager.Instance.PlayerCapitalPosition, _CastleTile);
+			}
+		}
+
 		_GroundTilemap.SetTilesBlock(bounds, tiles);
-		_DetailsTilemap.SetTile(CapitalPosition, _CastleTile);
 	}
 }
 }
