@@ -69,17 +69,18 @@ public class UIManager : Singleton<UIManager>
 		if (!UnitManager.Instance)
 			return;
 
-		Vector3Int capitalPos = GameManager.Instance.PlayerCapitalPosition;
+		Vector2Int capitalAxial = Hex.OffsetToAxial(GameManager.Instance.PlayerCapitalPosition);
 		const int SEARCH_RANGE = 1;
-		for (int y = -SEARCH_RANGE; y < SEARCH_RANGE; y++)
-		for (int x = -SEARCH_RANGE; x < SEARCH_RANGE; x++)
-		{
-			// Skip center tile.
-			if (x == 0 && y == 0) continue;
-			bool created = UnitManager.Instance.CreateUnit(capitalPos + new Vector3Int(x, y, 0), Color.blue);
-			// Exit on successful tile creation.
-			if (created) return;
-		}
+		for (var radius = 1; radius <= SEARCH_RANGE; radius++)
+			foreach (Vector2Int hexAxial in Hex.GetRing(capitalAxial, radius))
+			{
+				Hex hex = GameManager.Instance.HexMap.Find(hexAxial);
+				if (hex == null) continue;
+
+				hex.Unit = UnitManager.Instance.CreateUnit(hexAxial, Color.blue);
+				// Exit on successful unit creation.
+				if (hex.Unit) return;
+			}
 	}
 }
 }

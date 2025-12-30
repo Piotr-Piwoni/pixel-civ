@@ -21,6 +21,8 @@ public class GameManager : PersistentSingleton<GameManager>
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
 	public Vector3Int PlayerCapitalPosition { get; private set; }
 
+	public HexMap HexMap = new();
+
 	[SerializeField, TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
 	private GameObject _PlayerPrefab;
 	[SerializeField, TabGroup("", "Settings"),]
@@ -33,7 +35,6 @@ public class GameManager : PersistentSingleton<GameManager>
 	private bool _DelayPlayerInit;
 	private GameState _PreviousState;
 	private Spawner _PlayerSpawner;
-
 
 	protected override void Awake()
 	{

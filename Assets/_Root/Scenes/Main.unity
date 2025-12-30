@@ -3344,6 +3344,10 @@ PrefabInstance:
       propertyPath: _UnitManagerPrefab
       value: 
       objectReference: {fileID: 8955295138570573587, guid: 2428f054d2478b04e8e7b880a8578b09, type: 3}
+    - target: {fileID: 8853382275686802714, guid: 5cb9216582c3269438b9be9542dba5c5, type: 3}
+      propertyPath: m_EditorClassIdentifier
+      value: Project::PixelCiv.Managers.GameManager
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

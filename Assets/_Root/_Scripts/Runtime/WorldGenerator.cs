@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using PixelCiv.Managers;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -38,6 +39,7 @@ public class WorldGenerator : MonoBehaviour
 	[Button]
 	private void Clear()
 	{
+		GameManager.Instance.HexMap.Clear();
 		_GroundTilemap?.ClearAllTiles();
 		_DetailsTilemap?.ClearAllTiles();
 		if (Application.isPlaying)
@@ -55,38 +57,42 @@ public class WorldGenerator : MonoBehaviour
 		// Create world data.
 		Random.InitState(Environment.TickCount);
 
-		BoundsInt bounds = new(0, 0, 0, _WorldSize.x, _WorldSize.y, 1);
-		int totalWorldSize = _WorldSize.x * _WorldSize.y;
-		var tiles = new TileBase[totalWorldSize];
-
-		for (var y = 0; y < _WorldSize.y; y++)
-		for (var x = 0; x < _WorldSize.x; x++)
+		for (var r = 0; r < _WorldSize.y; r++)
+		for (int q = -r / 2; q < _WorldSize.x - r / 2; q++)
 		{
-			float noise = Mathf.PerlinNoise(x * _NoiseScale, y * _NoiseScale);
-
-			int index = y * _WorldSize.x + x;
-			tiles[index] = noise > _ThreshHold ? _GroundTile : null;
+			var hex = new Hex(q, r);
+			float noise = Mathf.PerlinNoise(hex.Offset.x * _NoiseScale, hex.Offset.y * _NoiseScale);
+			hex.Visuals = noise > _ThreshHold ? _GroundTile : null;
+			GameManager.Instance.HexMap.Add(hex);
 		}
 
+		BoundsInt bounds = new(0, 0, 0, _WorldSize.x, _WorldSize.y, 1);
+		TileBase[] tiles = GameManager.Instance.HexMap.GetTileMap(_WorldSize);
 		if (Application.isPlaying)
 		{
 			// Decide player capital placement.
-			int[] randomTiles = Enumerable.Range(0, totalWorldSize).OrderBy(_ => Random.value).ToArray();
-			var hasChosenCapitalTile = false;
+			int[] randomTiles = Enumerable.Range(0, tiles.Length).OrderBy(_ => Random.value).ToArray();
+			var hasFoundCapitalTile = false;
 			foreach (int index in randomTiles)
 			{
 				if (!tiles[index]) continue;
 
+				// Flatten to offset coordinates.
 				int x = index % _WorldSize.x;
 				int y = index / _WorldSize.x;
 
 				// Spawn player capital.
-				hasChosenCapitalTile = true;
-				GameManager.Instance.SetPlayerCapital(new Vector3Int(x, y, 0));
+				hasFoundCapitalTile = true;
+
+				Hex foundHex = GameManager.Instance.HexMap.Find(new Vector3Int(x, y, 0));
+				foundHex.Building = _CastleTile;
+
+				GameManager.Instance.SetPlayerCapital(foundHex.Offset);
+				_DetailsTilemap.SetTile(foundHex.Offset, foundHex.Building);
 				break;
 			}
 
-			if (!hasChosenCapitalTile)
+			if (!hasFoundCapitalTile)
 				Debug.LogWarning("There is no valid tile to spawn the player city in!");
 			else
 			{
@@ -101,8 +107,6 @@ public class WorldGenerator : MonoBehaviour
 				spawnerComp.SpawnerTag = SpawnerTag.Player;
 				// Spawn player.
 				spawnerComp.Spawn(GameManager.Instance.Player.transform);
-
-				_DetailsTilemap.SetTile(GameManager.Instance.PlayerCapitalPosition, _CastleTile);
 			}
 		}
 
