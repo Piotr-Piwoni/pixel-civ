@@ -8,11 +8,24 @@ namespace PixelCiv.Managers
 {
 public class UnitManager : Singleton<UnitManager>
 {
+	public event Action<Guid> OnMovementCompleted;
+
 	[SerializeField]
 	private GameObject _UnitPrefab;
+	private readonly Dictionary<Guid, Vector3Int> _MoveOrders = new();
 
 	private readonly List<Unit> _Units = new();
 
+
+	private void OnEnable()
+	{
+		OnMovementCompleted += CompleteMoveOrder;
+	}
+
+	private void OnDisable()
+	{
+		OnMovementCompleted -= CompleteMoveOrder;
+	}
 
 	public Unit CreateUnit(Vector3Int position, Color? colour = null)
 	{
@@ -31,6 +44,18 @@ public class UnitManager : Singleton<UnitManager>
 	public Unit CreateUnit(Vector2Int axial, Color? colour = null)
 	{
 		return CreateUnit(Hex.AxialToOffset(axial), colour);
+	}
+
+	private void CompleteMoveOrder(Guid id)
+	{
+		_MoveOrders.Remove(id);
+
+		Unit unit = _Units.Find(u => u.ID == id);
+		if (!unit) return;
+
+		Hex hex = GameManager.Instance.HexMap.Find(unit.CellPosition);
+		if (hex != null)
+			hex.Unit = unit.ID;
 	}
 }
 }

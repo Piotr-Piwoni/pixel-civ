@@ -14,7 +14,7 @@ public class Unit : MonoBehaviour
 	[ShowInInspector, ReadOnly,]
 	public Vector3Int CellPosition { get; private set; }
 	[ShowInInspector, ReadOnly,]
-	public Vector3Int TargetCellPosition { get; private set; }
+	public Vector3Int DestinationCell { get; private set; }
 
 	private SpriteRenderer _Renderer;
 
@@ -36,7 +36,7 @@ public class Unit : MonoBehaviour
 
 	public void SetTarget(Vector3Int targetCellPosition)
 	{
-		TargetCellPosition = targetCellPosition;
+		DestinationCell = targetCellPosition;
 	}
 
 	private void SetColour()

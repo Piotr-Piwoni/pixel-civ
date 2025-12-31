@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -19,7 +20,7 @@ public class Hex
 	public Vector3Int Offset { get; }
 
 	public TileBase Building;
-	public Unit Unit;
+	public Guid Unit;
 	public TileBase Visuals;
 
 
