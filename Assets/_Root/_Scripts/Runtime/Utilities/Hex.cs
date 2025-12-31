@@ -20,7 +20,7 @@ public class Hex
 	public Vector3Int Offset { get; }
 
 	public TileBase Building;
-	public Guid Unit;
+	public Guid UnitID = Guid.Empty;
 	public TileBase Visuals;
 
 

@@ -1,6 +1,7 @@
 using System;
 using PixelCiv.Managers;
 using PixelCiv.Utilities;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using DeviceType = PixelCiv.Managers.DeviceType;
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
 	private float _SprintMult = 1.5f;
 
 	private Camera _Camera;
+	[ShowInInspector, ReadOnly,]
 	private Guid _SelectedUnit;
 
 
@@ -29,6 +31,19 @@ public class PlayerController : MonoBehaviour
 	{
 		Vector2 moveInput = InputManager.Instance.MoveInput;
 		MoveCharacter(moveInput);
+
+		if (_SelectedUnit != Guid.Empty && Mouse.current.rightButton.wasPressedThisFrame)
+		{
+			Vector3 MouseWorldPos =
+					_Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+			Vector3Int mouseCellPos =
+					GameManager.Instance.Grid.WorldToCell(MouseWorldPos);
+			Hex targetHex = GameManager.Instance.HexMap.Find(mouseCellPos);
+			if (targetHex == null) return;
+			UnitManager.Instance.Move(_SelectedUnit, targetHex.Offset);
+			_SelectedUnit = Guid.Empty;
+			Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
+		}
 	}
 
 	private void OnEnable()
@@ -84,11 +99,12 @@ public class PlayerController : MonoBehaviour
 		Vector3Int mouseCellPos = GameManager.Instance.Grid.WorldToCell(MouseWorldPos);
 		Hex selectedHex = GameManager.Instance.HexMap.Find(mouseCellPos);
 		if (selectedHex == null) return;
-		_SelectedUnit = selectedHex.Unit;
+		_SelectedUnit = selectedHex.UnitID;
+		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
 		Debug.Log("--- Hex ---\n" +
 				  $"Cell Coord: {selectedHex.Offset}\n" +
 				  $"Axial Coord: {selectedHex.Axial}\n" +
-				  $"Unit ID: {selectedHex.Unit}\n" +
+				  $"Unit ID: {selectedHex.UnitID}\n" +
 				  $"Building: {selectedHex.Building}");
 	}
 }

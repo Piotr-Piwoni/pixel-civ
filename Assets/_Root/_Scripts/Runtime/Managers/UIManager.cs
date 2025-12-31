@@ -77,12 +77,12 @@ public class UIManager : Singleton<UIManager>
 			foreach (Vector2Int hexAxial in Hex.GetRing(capitalAxial, radius))
 			{
 				Hex hex = GameManager.Instance.HexMap.Find(hexAxial);
-				if (hex == null) continue;
+				if (hex == null || !hex.Visuals) continue;
 
 				Unit unit = UnitManager.Instance.CreateUnit(hexAxial, Color.blue);
 				// Exit on successful unit creation.
 				if (!unit) continue;
-				hex.Unit = unit.ID;
+				hex.UnitID = unit.ID;
 				return;
 			}
 	}
