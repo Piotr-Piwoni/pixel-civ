@@ -49,9 +49,7 @@ public class WorldGenerator : MonoBehaviour
 	[Button("Generate")]
 	private void GenerateWorld()
 	{
-		if (!_GroundTilemap || !_DetailsTilemap)
-			return;
-
+		if (!_GroundTilemap || !_DetailsTilemap) return;
 		Clear();
 
 		// Create world data.
@@ -61,7 +59,9 @@ public class WorldGenerator : MonoBehaviour
 		for (int q = -r / 2; q < _WorldSize.x - r / 2; q++)
 		{
 			var hex = new Hex(q, r);
-			float noise = Mathf.PerlinNoise(hex.Offset.x * _NoiseScale, hex.Offset.y * _NoiseScale);
+			float noise =
+					Mathf.PerlinNoise(hex.Offset.x * _NoiseScale,
+									  hex.Offset.y * _NoiseScale);
 			hex.Visuals = noise > _ThreshHold ? _GroundTile : null;
 			GameManager.Instance.HexMap.Add(hex);
 		}
@@ -71,7 +71,8 @@ public class WorldGenerator : MonoBehaviour
 		if (Application.isPlaying)
 		{
 			// Decide player capital placement.
-			int[] randomTiles = Enumerable.Range(0, tiles.Length).OrderBy(_ => Random.value).ToArray();
+			int[] randomTiles = Enumerable.Range(0, tiles.Length)
+										  .OrderBy(_ => Random.value).ToArray();
 			var hasFoundCapitalTile = false;
 			foreach (int index in randomTiles)
 			{
@@ -97,10 +98,11 @@ public class WorldGenerator : MonoBehaviour
 			else
 			{
 				// Spawner a player spawner.
-				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(GameManager.Instance
-						 .PlayerCapitalPosition);
-				spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
-				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
+				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(
+						GameManager.Instance.PlayerCapitalPosition);
+				spawnerPosition.z = -10f; //< Keep camera in front.
+				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition,
+											 Quaternion.identity);
 
 				// Setup spawner.
 				var spawnerComp = _PlayerSpawner.GetComponent<Spawner>();

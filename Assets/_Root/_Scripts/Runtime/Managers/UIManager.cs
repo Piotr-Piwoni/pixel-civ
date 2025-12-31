@@ -45,9 +45,7 @@ public class UIManager : Singleton<UIManager>
 
 	private void OnDisable()
 	{
-		if (!InputManager.Instance)
-			return;
-
+		if (!InputManager.Instance) return;
 		InputManager.Instance.OnDeviceChanged -= OnDeviceChanged;
 	}
 

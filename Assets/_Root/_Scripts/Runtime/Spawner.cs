@@ -38,10 +38,10 @@ public class Spawner : MonoBehaviour
 	{
 		if (!_SpawnablePrefab)
 		{
-#if UNITY_EDITOR
+			#if UNITY_EDITOR
 			if (!EditorApplication.isPlaying)
 				Debug.LogWarning($"{name} is missing a spawnable prefab!");
-#endif
+			#endif
 			return;
 		}
 

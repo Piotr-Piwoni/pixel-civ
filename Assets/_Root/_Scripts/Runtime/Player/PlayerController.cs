@@ -8,7 +8,8 @@ namespace PixelCiv
 {
 public class PlayerController : MonoBehaviour
 {
-	[SerializeField, Header("Movement Settings"), Tooltip("Speed of the player movement"),]
+	[SerializeField, Header("Movement Settings"),
+	 Tooltip("Speed of the player movement"),]
 	private float _MoveSpeed = 5f;
 	[SerializeField, Tooltip("Speed multiplier applied when the player is sprinting."),]
 	private float _SprintMult = 1.5f;
@@ -37,7 +38,6 @@ public class PlayerController : MonoBehaviour
 	private void OnDisable()
 	{
 		if (!InputManager.Instance) return;
-
 		InputManager.Instance.OnInteractionPressed -= OnSelect;
 		InputManager.Instance.OnDeviceChanged -= HandleDeviceChanged;
 	}

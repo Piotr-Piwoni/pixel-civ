@@ -10,8 +10,8 @@ public class Hex
 {
 	private static readonly Vector2Int[] _AxialDirections =
 	{
-		new(1, 0), new(1, -1), new(0, -1),
-		new(-1, 0), new(-1, 1), new(0, 1),
+			new(1, 0), new(1, -1), new(0, -1),
+			new(-1, 0), new(-1, 1), new(0, 1),
 	};
 
 	public int Q => Axial.x;
@@ -24,9 +24,8 @@ public class Hex
 	public TileBase Visuals;
 
 
-	public Hex(Vector2Int axial, TileBase visuals = null) : this(axial.x, axial.y, visuals)
-	{
-	}
+	public Hex(Vector2Int axial, TileBase visuals = null) :
+			this(axial.x, axial.y, visuals) { }
 
 	public Hex(int q, int r, TileBase visuals = null)
 	{

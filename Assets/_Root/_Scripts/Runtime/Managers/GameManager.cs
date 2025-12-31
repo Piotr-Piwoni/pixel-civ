@@ -23,7 +23,8 @@ public class GameManager : PersistentSingleton<GameManager>
 
 	public HexMap HexMap = new();
 
-	[SerializeField, TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
+	[SerializeField,
+	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
 	private GameObject _PlayerPrefab;
 	[SerializeField, TabGroup("", "Settings"),]
 	private AudioClip _MusicClip;
@@ -90,9 +91,7 @@ public class GameManager : PersistentSingleton<GameManager>
 		CurrentState = newState;
 	}
 
-	public override void OnSceneChange(Scene scene, LoadSceneMode mode)
-	{
-	}
+	public override void OnSceneChange(Scene scene, LoadSceneMode mode) { }
 
 	public void SetPlayerCapital(Vector3Int position)
 	{
@@ -104,18 +103,13 @@ public class GameManager : PersistentSingleton<GameManager>
 		// If the Actors group was not found create it.
 		ActorsGroup = GameObject.FindGameObjectWithTag("ActorGroup")?.transform;
 		if (!ActorsGroup)
-			ActorsGroup = new GameObject("Actors")
-			{
-				tag = "ActorGroup",
-			}.transform;
+			ActorsGroup = new GameObject("Actors") { tag = "ActorGroup", }.transform;
 
 		// If the Managers group was not found create it.
 		ManagersGroup = GameObject.FindGameObjectWithTag("ManagersGroup")?.transform;
 		if (!ManagersGroup)
 			ManagersGroup = new GameObject("Managers & Systems")
-			{
-				tag = "ManagersGroup",
-			}.transform;
+					{ tag = "ManagersGroup", }.transform;
 	}
 
 	private void HandlePlayerInit()
@@ -131,8 +125,7 @@ public class GameManager : PersistentSingleton<GameManager>
 		Spawner[] spawners = FindObjectsByType<Spawner>(FindObjectsSortMode.None);
 		foreach (Spawner spawner in spawners)
 		{
-			if (spawner.SpawnerTag != SpawnerTag.Player)
-				continue;
+			if (spawner.SpawnerTag != SpawnerTag.Player) continue;
 			_PlayerSpawner = spawner;
 			break;
 		}
@@ -141,7 +134,8 @@ public class GameManager : PersistentSingleton<GameManager>
 		if (_PlayerSpawner)
 			_PlayerSpawner.Spawn(Player.transform);
 		else
-			Debug.Log("<color=yellow>Player spawner was not found in the scene. Using default position.</color>");
+			Debug.Log("<color=yellow>Player spawner was not found in the scene. " +
+					  "Using default position.</color>");
 	}
 
 	private void TryGetPlayer()

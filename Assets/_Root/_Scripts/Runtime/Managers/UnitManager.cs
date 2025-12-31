@@ -12,8 +12,8 @@ public class UnitManager : Singleton<UnitManager>
 
 	[SerializeField]
 	private GameObject _UnitPrefab;
-	private readonly Dictionary<Guid, Vector3Int> _MoveOrders = new();
 
+	private readonly Dictionary<Guid, Vector3Int> _MoveOrders = new();
 	private readonly List<Unit> _Units = new();
 
 
