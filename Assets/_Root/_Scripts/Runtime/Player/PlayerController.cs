@@ -1,5 +1,6 @@
 using System;
 using PixelCiv.Managers;
+using PixelCiv.Utilities;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using DeviceType = PixelCiv.Managers.DeviceType;
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
 	private float _SprintMult = 1.5f;
 
 	private Camera _Camera;
+	private Guid _SelectedUnit;
 
 
 	private void Awake()
@@ -75,7 +77,19 @@ public class PlayerController : MonoBehaviour
 
 	private void OnSelect()
 	{
-		Debug.Log("Selected!");
+		if (!GameManager.Instance) return;
+
+		Vector3 MouseWorldPos =
+				_Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+		Vector3Int mouseCellPos = GameManager.Instance.Grid.WorldToCell(MouseWorldPos);
+		Hex selectedHex = GameManager.Instance.HexMap.Find(mouseCellPos);
+		if (selectedHex == null) return;
+		_SelectedUnit = selectedHex.Unit;
+		Debug.Log("--- Hex ---\n" +
+				  $"Cell Coord: {selectedHex.Offset}\n" +
+				  $"Axial Coord: {selectedHex.Axial}\n" +
+				  $"Unit ID: {selectedHex.Unit}\n" +
+				  $"Building: {selectedHex.Building}");
 	}
 }
 }
