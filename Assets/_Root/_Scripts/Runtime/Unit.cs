@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PixelCiv.Managers;
+using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -19,18 +20,19 @@ public class Unit : MonoBehaviour
 	[ShowInInspector]
 	public Guid ID { get; private set; }
 	[ShowInInspector, ReadOnly,]
-	public Vector3Int CellPosition { get; private set; }
+	public HexCoords NextHexMove { get; private set; }
 	[ShowInInspector, ReadOnly,]
-	public Vector3Int NextMoveCell { get; private set; }
+	public HexCoords Position { get; private set; }
+
+	private bool _IsMoving;
 
 	// Debugging fields.
 	#if UNITY_EDITOR
-	[SerializeField, ReadOnly,]
-	private Vector3Int _DestinationCell;
+	[ShowInInspector, ReadOnly,]
+	private HexCoords _Destination;
 	#endif
 
-	private bool _IsMoving;
-	private Queue<Vector3Int> _Path = new();
+	private Queue<HexCoords> _Path = new();
 	private SpriteRenderer _Renderer;
 
 
@@ -43,46 +45,47 @@ public class Unit : MonoBehaviour
 	{
 		if (!_IsMoving || _Path.Count == 0) return;
 
-		NextMoveCell = _Path.Peek();
-		Vector3 worldPos = GameManager.Instance.Grid.CellToWorld(NextMoveCell);
+		NextHexMove = _Path.Peek();
+		Vector3 worldPos = GameManager.Instance.Grid.CellToWorld(NextHexMove.Offset);
 		// Move towards target.
 		transform.position = Vector3.MoveTowards(transform.position, worldPos,
 												 MOVE_SPEED * Time.deltaTime);
 
 		// If within margin, set the cell position.
 		if (!(Vector3.Distance(transform.position, worldPos) < 0.01f)) return;
-		CellPosition = _Path.Dequeue();
+		Position = _Path.Dequeue();
 
 		// Reset fields related to movement and invoke the movement completed event.
 		if (_Path.Count != 0) return;
 		_IsMoving = false;
-		NextMoveCell = Vector3Int.zero;
+		NextHexMove = HexCoords.Zero;
 		OnMovementCompleted?.Invoke(ID);
 
 		#if UNITY_EDITOR
-		_DestinationCell = Vector3Int.zero;
+		_Destination = HexCoords.Zero;
 		#endif
 	}
 
-	public void Initialize(Guid id, Color colour, Vector3Int cellPosition)
+	public void Initialize(Guid id, Color colour, HexCoords position)
 	{
 		ID = id;
 		Colour = colour;
-		CellPosition = cellPosition;
+		Position = position;
 
-		transform.position = GameManager.Instance.Grid.GetCellCenterWorld(CellPosition);
+		transform.position =
+				GameManager.Instance.Grid.GetCellCenterWorld(Position.Offset);
 		SetColour();
 	}
 
-	public void SetPath(List<Vector3Int> path)
+	public void SetPath(List<HexCoords> path)
 	{
 		if (path.IsNullOrEmpty()) return;
 
-		_Path = new Queue<Vector3Int>(path);
+		_Path = new Queue<HexCoords>(path);
 		_IsMoving = true;
 
 		#if UNITY_EDITOR
-		_DestinationCell = _Path.Last();
+		_Destination = _Path.Last();
 		#endif
 	}
 

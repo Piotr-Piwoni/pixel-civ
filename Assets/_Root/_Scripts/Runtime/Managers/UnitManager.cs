@@ -11,21 +11,20 @@ public class UnitManager : Singleton<UnitManager>
 	[SerializeField]
 	private GameObject _UnitPrefab;
 
-	private readonly Dictionary<Guid, Vector3Int> _MoveOrders = new();
 	private readonly List<Unit> _Units = new();
 
 
 	/// <summary>
 	///     Create a new Unit object.
 	/// </summary>
-	/// <param name="position">The Unit's spawning position in offset coordinates.</param>
+	/// <param name="position">The Unit's spawning hex position.</param>
 	/// <param name="colour">Optional colour to set the sprite tint to.</param>
-	/// <returns></returns>
-	public Unit CreateUnit(Vector3Int position, Color? colour = null)
+	/// <returns>The created Unit object.</returns>
+	public Unit CreateUnit(HexCoords position, Color? colour = null)
 	{
-		if (_Units.Any(unit => unit.CellPosition == position))
+		if (_Units.Any(unit => unit.Position == position))
 		{
-			Debug.Log($"A unit already exists on the specified tile{position}.");
+			Debug.Log($"A unit already exists on the specified tile{position.Offset}.");
 			return null;
 		}
 
@@ -36,40 +35,29 @@ public class UnitManager : Singleton<UnitManager>
 		return unit;
 	}
 
-	public Unit CreateUnit(Vector2Int axial, Color? colour = null)
-	{
-		return CreateUnit(Hex.AxialToOffset(axial), colour);
-	}
-
 	/// <summary>
-	///     Move a desired Unit towards a specified cell.
+	///     Move a desired Unit towards a specified hex cell.
 	/// </summary>
 	/// <param name="id">The GUID of the Unit to be moved.</param>
-	/// <param name="targetCell">The target cell's position in offset coordinates.</param>
-	public void Move(Guid id, Vector3Int targetCell)
+	/// <param name="targetCoords">The target's hex position.</param>
+	public void Move(Guid id, HexCoords targetCoords)
 	{
 		Unit unit = _Units.Find(u => u.ID == id);
 		if (!unit) return;
 
 		// Validate target tile.
-		Hex targetHex = GameManager.Instance.HexMap.Find(targetCell);
+		Hex targetHex = GameManager.Instance.HexMap.Find(targetCoords);
 		if (targetHex == null || targetHex.UnitID != Guid.Empty) return;
 
 		// Clear current hex occupancy.
-		Hex currentHex = GameManager.Instance.HexMap.Find(unit.CellPosition);
+		Hex currentHex = GameManager.Instance.HexMap.Find(unit.Position);
 		if (currentHex != null)
 			currentHex.UnitID = Guid.Empty;
 
 		// Compute path.
-		List<Vector3Int> path = FindPath(Hex.OffsetToAxial(unit.CellPosition),
-										 Hex.OffsetToAxial(targetCell));
+		List<HexCoords> path = FindPath(unit.Position, targetCoords);
 		unit.SetPath(path);
 		unit.OnMovementCompleted += CompleteMoveOrder;
-	}
-
-	public void Move(Guid id, Vector2Int targetCell)
-	{
-		Move(id, Hex.AxialToOffset(targetCell));
 	}
 
 	private void CompleteMoveOrder(Guid id)
@@ -77,41 +65,40 @@ public class UnitManager : Singleton<UnitManager>
 		Unit unit = _Units.Find(u => u.ID == id);
 		if (!unit) return;
 
-		Hex hex = GameManager.Instance.HexMap.Find(unit.CellPosition);
+		Hex hex = GameManager.Instance.HexMap.Find(unit.Position);
 		if (hex != null)
 			hex.UnitID = unit.ID;
-
-		_MoveOrders.Remove(id);
 	}
 
 	/// <summary>
 	///     A* pathing calculation to a desired position.
 	/// </summary>
-	/// <param name="start">The starting cell position, in axial coordinates.</param>
-	/// <param name="goal">The destination cell position, in axial coordinates.</param>
-	/// <returns></returns>
-	private List<Vector3Int> FindPath(Vector2Int start, Vector2Int goal)
+	/// <param name="start">The starting hex position.</param>
+	/// <param name="goal">The destination hex position.</param>
+	/// <returns>The path containing hex positions.</returns>
+	private List<HexCoords> FindPath(HexCoords start, HexCoords goal)
 	{
-		var frontier = new List<Vector2Int> { start, };
-		var traveledPath = new Dictionary<Vector2Int, Vector2Int>();
-		var movementCost = new Dictionary<Vector2Int, int> { [start] = 0, };
-		var totalCostToGoal = new Dictionary<Vector2Int, int>
-				{ [start] = movementCost[start] + Hex.Distance(start, goal), };
+		var frontier = new List<HexCoords> { start, };
+		var traveledPath = new Dictionary<HexCoords, HexCoords>();
+		var movementCost = new Dictionary<HexCoords, int> { [start] = 0, };
+		var totalCostToGoal = new Dictionary<HexCoords, int>
+				{ [start] = movementCost[start] + start.DistanceTo(goal), };
 
 		// Loop until the no more tiles are left to check.
 		while (frontier.Count > 0)
 		{
 			// Get the current tile based on the shorest distance to goal.
-			Vector2Int currentTile = frontier
-									 .OrderBy(n => totalCostToGoal.GetValueOrDefault(
-													  n, int.MaxValue)).First();
+			HexCoords currentTile = frontier
+									.OrderBy(n => totalCostToGoal.GetValueOrDefault(
+													 n, int.MaxValue))
+									.First();
 
 			frontier.Remove(currentTile);
 			if (currentTile == goal)
 				return ReconstructPath(traveledPath, currentTile);
 
 			// Check each neighbour of the current tile.
-			foreach (Vector2Int neighbour in Hex.GetNeighbours(currentTile))
+			foreach (HexCoords neighbour in Hex.GetNeighbours(currentTile))
 			{
 				// Ignore invalid tiles.
 				Hex neighbourTile = GameManager.Instance.HexMap.Find(neighbour);
@@ -130,8 +117,7 @@ public class UnitManager : Singleton<UnitManager>
 				// Add to path.
 				traveledPath[neighbour] = currentTile;
 				movementCost[neighbour] = assumedMoveCost;
-				totalCostToGoal[neighbour] =
-						assumedMoveCost + Hex.Distance(neighbour, goal);
+				totalCostToGoal[neighbour] = assumedMoveCost + neighbour.DistanceTo(goal);
 				if (!frontier.Contains(neighbour))
 					frontier.Add(neighbour);
 			}
@@ -139,13 +125,13 @@ public class UnitManager : Singleton<UnitManager>
 
 		// In case no valid path was found.
 		Debug.LogWarning("No valid path was found!");
-		return new List<Vector3Int>();
+		return new List<HexCoords>();
 	}
 
-	private List<Vector3Int> ReconstructPath(Dictionary<Vector2Int, Vector2Int> cameFrom,
-			Vector2Int current)
+	private List<HexCoords> ReconstructPath(Dictionary<HexCoords, HexCoords> cameFrom,
+			HexCoords current)
 	{
-		var path = new List<Vector2Int>();
+		var path = new List<HexCoords>();
 		// Continue until the current tile is equal to itself.
 		while (true)
 		{
@@ -155,7 +141,7 @@ public class UnitManager : Singleton<UnitManager>
 		}
 
 		path.Reverse();
-		return path.Select(Hex.AxialToOffset).ToList();
+		return path;
 	}
 }
 }

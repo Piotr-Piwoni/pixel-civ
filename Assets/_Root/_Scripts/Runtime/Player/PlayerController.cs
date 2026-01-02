@@ -31,19 +31,7 @@ public class PlayerController : MonoBehaviour
 	{
 		Vector2 moveInput = InputManager.Instance.MoveInput;
 		MoveCharacter(moveInput);
-
-		if (_SelectedUnit != Guid.Empty && Mouse.current.rightButton.wasPressedThisFrame)
-		{
-			Vector3 MouseWorldPos =
-					_Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-			Vector3Int mouseCellPos =
-					GameManager.Instance.Grid.WorldToCell(MouseWorldPos);
-			Hex targetHex = GameManager.Instance.HexMap.Find(mouseCellPos);
-			if (targetHex == null) return;
-			UnitManager.Instance.Move(_SelectedUnit, targetHex.Offset);
-			_SelectedUnit = Guid.Empty;
-			Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
-		}
+		MoveUnit();
 	}
 
 	private void OnEnable()
@@ -90,20 +78,35 @@ public class PlayerController : MonoBehaviour
 		transform.Translate(movement, Space.World);
 	}
 
+	private void MoveUnit()
+	{
+		if (_SelectedUnit == Guid.Empty || !Mouse.current.rightButton.wasPressedThisFrame)
+			return;
+
+		HexCoords mouseHexCoords =
+				Utils.GetMouseHexCoords(_Camera, GameManager.Instance.Grid);
+		Hex targetHex = GameManager.Instance.HexMap.Find(mouseHexCoords);
+		if (targetHex == null) return;
+
+		UnitManager.Instance.Move(_SelectedUnit, targetHex.Coordinates);
+		_SelectedUnit = Guid.Empty;
+		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
+	}
+
 	private void OnSelect()
 	{
 		if (!GameManager.Instance) return;
 
-		Vector3 MouseWorldPos =
-				_Camera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-		Vector3Int mouseCellPos = GameManager.Instance.Grid.WorldToCell(MouseWorldPos);
-		Hex selectedHex = GameManager.Instance.HexMap.Find(mouseCellPos);
+		HexCoords mouseHexCoords =
+				Utils.GetMouseHexCoords(_Camera, GameManager.Instance.Grid);
+		Hex selectedHex = GameManager.Instance.HexMap.Find(mouseHexCoords);
 		if (selectedHex == null) return;
+
 		_SelectedUnit = selectedHex.UnitID;
 		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
 		Debug.Log("--- Hex ---\n" +
-				  $"Cell Coord: {selectedHex.Offset}\n" +
-				  $"Axial Coord: {selectedHex.Axial}\n" +
+				  $"Cell Coord: {selectedHex.Coordinates.Offset}\n" +
+				  $"Axial Coord: {selectedHex.Coordinates.Axial}\n" +
 				  $"Unit ID: {selectedHex.UnitID}\n" +
 				  $"Building: {selectedHex.Building}");
 	}

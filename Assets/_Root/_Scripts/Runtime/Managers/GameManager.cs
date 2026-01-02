@@ -16,10 +16,10 @@ public class GameManager : PersistentSingleton<GameManager>
 	[TabGroup("", "Info"), ShowInInspector, ReadOnly, PropertyOrder(-1f),]
 	public GameState CurrentState { get; private set; } = GameState.Playing;
 	public Grid Grid => _Grid;
+	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
+	public HexCoords PlayerCapitalPosition { get; private set; }
 	public Transform ActorsGroup { get; private set; }
 	public Transform ManagersGroup { get; private set; }
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
-	public Vector3Int PlayerCapitalPosition { get; private set; }
 
 	public HexMap HexMap = new();
 
@@ -93,7 +93,7 @@ public class GameManager : PersistentSingleton<GameManager>
 
 	public override void OnSceneChange(Scene scene, LoadSceneMode mode) { }
 
-	public void SetPlayerCapital(Vector3Int position)
+	public void SetPlayerCapital(HexCoords position)
 	{
 		PlayerCapitalPosition = position;
 	}

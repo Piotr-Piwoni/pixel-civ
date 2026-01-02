@@ -2,10 +2,12 @@ OVDF v1.1
 PixelCiv.Unit, Project
 MetaGuid:6788f9b7823149e08e5d0df12bacdcd5
 
-# $4HoehgPrpVg5p45TJ7BcUX
-Position: $root:27
-+ [Sirenix.OdinInspector.FoldoutGroupAttribute]
+# $9adCH9jU43drfQJzFXsg2j
+Position: $root:26
++ [Sirenix.OdinInspector.TitleGroupAttribute]
 	GroupName = "Movement Information"
+	Alignment = Left
+	Indent = False
 
 # ID
 Position: $root:6
@@ -34,3 +36,41 @@ Position: $4HoehgPrpVg5p45TJ7BcUX:0
 	Text = "Next Cell to Move To"
 	NicifyText = True
 	Icon = None
+
+# Position
+Position: $9adCH9jU43drfQJzFXsg2j:0
++ [Sirenix.OdinInspector.TitleAttribute]
+	Title = "Position"
+	TitleAlignment = Centered
+	HorizontalLine = False
+	Bold = True
+	Subtitle = ""
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.InlinePropertyAttribute]
+	LabelWidth = 52
+
+# _Destination
+Position: $9adCH9jU43drfQJzFXsg2j:2
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.InlinePropertyAttribute]
+	LabelWidth = 52
++ [Sirenix.OdinInspector.TitleAttribute]
+	TitleAlignment = Centered
+	HorizontalLine = False
+	Title = "Destination"
++ [Sirenix.OdinInspector.GUIColorAttribute]
+	Color = #FF0000FF
+
+# NextHexMove
+Position: $9adCH9jU43drfQJzFXsg2j:1
++ [Sirenix.OdinInspector.InlinePropertyAttribute]
+	LabelWidth = 52
++ [Sirenix.OdinInspector.HideLabelAttribute]
++ [Sirenix.OdinInspector.TitleAttribute]
+	Title = "Next Hex Cell to Move To"
+	HorizontalLine = False
+	Bold = True
+	Subtitle = ""
+	TitleAlignment = Centered
++ [Sirenix.OdinInspector.GUIColorAttribute]
+	Color = #00C1FFFF

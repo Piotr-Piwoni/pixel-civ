@@ -59,9 +59,8 @@ public class WorldGenerator : MonoBehaviour
 		for (int q = -r / 2; q < _WorldSize.x - r / 2; q++)
 		{
 			var hex = new Hex(q, r);
-			float noise =
-					Mathf.PerlinNoise(hex.Offset.x * _NoiseScale,
-									  hex.Offset.y * _NoiseScale);
+			float noise = Mathf.PerlinNoise(hex.Coordinates.Offset.x * _NoiseScale,
+											hex.Coordinates.Offset.y * _NoiseScale);
 			hex.Visuals = noise > _ThreshHold ? _GroundTile : null;
 			GameManager.Instance.HexMap.Add(hex);
 		}
@@ -72,24 +71,26 @@ public class WorldGenerator : MonoBehaviour
 		{
 			// Decide player capital placement.
 			int[] randomTiles = Enumerable.Range(0, tiles.Length)
-										  .OrderBy(_ => Random.value).ToArray();
+										  .OrderBy(_ => Random.value)
+										  .ToArray();
 			var hasFoundCapitalTile = false;
 			foreach (int index in randomTiles)
 			{
 				if (!tiles[index]) continue;
 
-				// Flatten to offset coordinates.
-				int x = index % _WorldSize.x;
-				int y = index / _WorldSize.x;
+				// Flatten to axial coordinates.
+				int r = index / _WorldSize.x;
+				int q = index % _WorldSize.x - (r - (r & 1)) / 2;
+
 
 				// Spawn player capital.
 				hasFoundCapitalTile = true;
 
-				Hex foundHex = GameManager.Instance.HexMap.Find(new Vector3Int(x, y, 0));
+				Hex foundHex = GameManager.Instance.HexMap.Find(new HexCoords(q, r));
 				foundHex.Building = _CastleTile;
 
-				GameManager.Instance.SetPlayerCapital(foundHex.Offset);
-				_DetailsTilemap.SetTile(foundHex.Offset, foundHex.Building);
+				GameManager.Instance.SetPlayerCapital(foundHex.Coordinates);
+				_DetailsTilemap.SetTile(foundHex.Coordinates.Offset, foundHex.Building);
 				break;
 			}
 
@@ -98,8 +99,8 @@ public class WorldGenerator : MonoBehaviour
 			else
 			{
 				// Spawner a player spawner.
-				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(
-						GameManager.Instance.PlayerCapitalPosition);
+				Vector3Int capitalPos = GameManager.Instance.PlayerCapitalPosition.Offset;
+				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(capitalPos);
 				spawnerPosition.z = -10f; //< Keep camera in front.
 				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition,
 											 Quaternion.identity);
