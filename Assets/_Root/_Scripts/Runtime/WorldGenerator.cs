@@ -24,7 +24,7 @@ public class WorldGenerator : MonoBehaviour
 	[SerializeField, MinValue(0f),]
 	private float _NoiseScale = 2f;
 	[SerializeField, Range(0f, 1f),]
-	private float _ThreshHold = 0.5f;
+	private float _Threshold = 0.4f;
 	[SerializeField]
 	private GameObject _SpawnerPrefab;
 
@@ -61,7 +61,7 @@ public class WorldGenerator : MonoBehaviour
 			var hex = new Hex(q, r);
 			float noise = Mathf.PerlinNoise(hex.Coordinates.Offset.x * _NoiseScale,
 											hex.Coordinates.Offset.y * _NoiseScale);
-			hex.Visuals = noise > _ThreshHold ? _GroundTile : null;
+			hex.Visuals = noise > _Threshold ? _GroundTile : null;
 			GameManager.Instance.HexMap.Add(hex);
 		}
 

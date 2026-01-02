@@ -83,8 +83,12 @@ public class Hex
 {
 	private static readonly Vector2Int[] _AxialDirections =
 	{
-			new(1, 0), new(1, -1), new(0, -1),
-			new(-1, 0), new(-1, 1), new(0, 1),
+			new(+1, -1),
+			new(0, -1),
+			new(-1, 0),
+			new(-1, +1),
+			new(0, +1),
+			new(+1, 0),
 	};
 
 
@@ -124,42 +128,48 @@ public class Hex
 		return neighbours;
 	}
 
-	public IEnumerable<HexCoords> GetRing(int radius)
+	public List<HexCoords> GetRing(int radius)
 	{
+		var results = new List<HexCoords>();
 		if (radius == 0)
 		{
-			yield return Coordinates;
-			yield break;
+			results.Add(Coordinates);
+			return results;
 		}
 
-		// Starting hex direction.
+		// Start at top-right.
 		Vector2Int hex = Coordinates.Axial + _AxialDirections[4] * radius;
 
-		foreach (Vector2Int direction in _AxialDirections)
-			for (var step = 0; step < radius; step++)
-			{
-				yield return new HexCoords(hex);
-				hex += direction;
-			}
-	}
-
-	public static IEnumerable<HexCoords> GetRing(HexCoords center, int radius)
-	{
-		if (radius == 0)
+		for (var i = 0; i < 6; i++)
+		for (var j = 0; j < radius; j++)
 		{
-			yield return center;
-			yield break;
+			results.Add(new HexCoords(hex));
+			hex += _AxialDirections[i];
 		}
 
-		// Starting hex direction.
+		return results;
+	}
+
+	public static List<HexCoords> GetRing(HexCoords center, int radius)
+	{
+		var results = new List<HexCoords>();
+		if (radius == 0)
+		{
+			results.Add(center);
+			return results;
+		}
+
+		// Start at top-right.
 		Vector2Int hex = center.Axial + _AxialDirections[4] * radius;
 
-		foreach (Vector2Int direction in _AxialDirections)
-			for (var step = 0; step < radius; step++)
-			{
-				yield return new HexCoords(hex);
-				hex += direction;
-			}
+		for (var i = 0; i < 6; i++)
+		for (var j = 0; j < radius; j++)
+		{
+			results.Add(new HexCoords(hex));
+			hex += _AxialDirections[i];
+		}
+
+		return results;
 	}
 }
 
