@@ -71,9 +71,7 @@ public class InputManager : PersistentSingleton<InputManager>
 			_PlayerInput.onControlsChanged -= OnControlsChanged;
 	}
 
-	public override void OnSceneChange(Scene scene, LoadSceneMode mode)
-	{
-	}
+	public override void OnSceneChange(Scene scene, LoadSceneMode mode) { }
 
 	public void SetPlayerInput(PlayerInput playerInput)
 	{
@@ -142,8 +140,8 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 		_ActionMapDictionary = new Dictionary<ActionMap, string>
 		{
-			{ ActionMap.Gameplay, _GameplayActionMap },
-			{ ActionMap.UI, _UIActionMap },
+				{ ActionMap.Gameplay, _GameplayActionMap },
+				{ ActionMap.UI, _UIActionMap },
 		};
 	}
 
@@ -209,9 +207,9 @@ public class InputManager : PersistentSingleton<InputManager>
 	{
 		DeviceType newDevice = controlScheme switch
 		{
-			"Keyboard&Mouse" => DeviceType.KeyboardMouse,
-			"Gamepad" => DeviceType.Gamepad,
-			_ => DeviceType.Unknown,
+				"Keyboard&Mouse" => DeviceType.KeyboardMouse,
+				"Gamepad" => DeviceType.Gamepad,
+				_ => DeviceType.Unknown,
 		};
 
 		if (newDevice == CurrentDeviceType) return;

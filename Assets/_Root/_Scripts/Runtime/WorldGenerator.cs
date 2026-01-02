@@ -24,7 +24,7 @@ public class WorldGenerator : MonoBehaviour
 	[SerializeField, MinValue(0f),]
 	private float _NoiseScale = 2f;
 	[SerializeField, Range(0f, 1f),]
-	private float _ThreshHold = 0.5f;
+	private float _Threshold = 0.4f;
 	[SerializeField]
 	private GameObject _SpawnerPrefab;
 
@@ -49,9 +49,7 @@ public class WorldGenerator : MonoBehaviour
 	[Button("Generate")]
 	private void GenerateWorld()
 	{
-		if (!_GroundTilemap || !_DetailsTilemap)
-			return;
-
+		if (!_GroundTilemap || !_DetailsTilemap) return;
 		Clear();
 
 		// Create world data.
@@ -61,8 +59,9 @@ public class WorldGenerator : MonoBehaviour
 		for (int q = -r / 2; q < _WorldSize.x - r / 2; q++)
 		{
 			var hex = new Hex(q, r);
-			float noise = Mathf.PerlinNoise(hex.Offset.x * _NoiseScale, hex.Offset.y * _NoiseScale);
-			hex.Visuals = noise > _ThreshHold ? _GroundTile : null;
+			float noise = Mathf.PerlinNoise(hex.Coordinates.Offset.x * _NoiseScale,
+											hex.Coordinates.Offset.y * _NoiseScale);
+			hex.Visuals = noise > _Threshold ? _GroundTile : null;
 			GameManager.Instance.HexMap.Add(hex);
 		}
 
@@ -71,24 +70,27 @@ public class WorldGenerator : MonoBehaviour
 		if (Application.isPlaying)
 		{
 			// Decide player capital placement.
-			int[] randomTiles = Enumerable.Range(0, tiles.Length).OrderBy(_ => Random.value).ToArray();
+			int[] randomTiles = Enumerable.Range(0, tiles.Length)
+										  .OrderBy(_ => Random.value)
+										  .ToArray();
 			var hasFoundCapitalTile = false;
 			foreach (int index in randomTiles)
 			{
 				if (!tiles[index]) continue;
 
-				// Flatten to offset coordinates.
-				int x = index % _WorldSize.x;
-				int y = index / _WorldSize.x;
+				// Flatten to axial coordinates.
+				int r = index / _WorldSize.x;
+				int q = index % _WorldSize.x - (r - (r & 1)) / 2;
+
 
 				// Spawn player capital.
 				hasFoundCapitalTile = true;
 
-				Hex foundHex = GameManager.Instance.HexMap.Find(new Vector3Int(x, y, 0));
+				Hex foundHex = GameManager.Instance.HexMap.Find(new HexCoords(q, r));
 				foundHex.Building = _CastleTile;
 
-				GameManager.Instance.SetPlayerCapital(foundHex.Offset);
-				_DetailsTilemap.SetTile(foundHex.Offset, foundHex.Building);
+				GameManager.Instance.SetPlayerCapital(foundHex.Coordinates);
+				_DetailsTilemap.SetTile(foundHex.Coordinates.Offset, foundHex.Building);
 				break;
 			}
 
@@ -97,10 +99,11 @@ public class WorldGenerator : MonoBehaviour
 			else
 			{
 				// Spawner a player spawner.
-				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(GameManager.Instance
-						 .PlayerCapitalPosition);
-				spawnerPosition.z = -10f; //< Offset by -10 units so that the camera is in front.
-				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition, Quaternion.identity);
+				Vector3Int capitalPos = GameManager.Instance.PlayerCapitalPosition.Offset;
+				Vector3 spawnerPosition = _GroundTilemap.GetCellCenterWorld(capitalPos);
+				spawnerPosition.z = -10f; //< Keep camera in front.
+				_PlayerSpawner = Instantiate(_SpawnerPrefab, spawnerPosition,
+											 Quaternion.identity);
 
 				// Setup spawner.
 				var spawnerComp = _PlayerSpawner.GetComponent<Spawner>();

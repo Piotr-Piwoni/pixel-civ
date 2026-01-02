@@ -8,9 +8,12 @@ namespace PixelCiv.Managers
 {
 public class UIManager : Singleton<UIManager>
 {
-	[SerializeField, TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"), ReadOnly,]
+	[SerializeField,
+	 TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),
+	 ReadOnly,]
 	private UIDocument _Document;
-	[SerializeField, TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
+	[SerializeField,
+	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
 	private VisualTreeAsset _StartingUI;
 
 
@@ -42,9 +45,7 @@ public class UIManager : Singleton<UIManager>
 
 	private void OnDisable()
 	{
-		if (!InputManager.Instance)
-			return;
-
+		if (!InputManager.Instance) return;
 		InputManager.Instance.OnDeviceChanged -= OnDeviceChanged;
 	}
 
@@ -59,8 +60,7 @@ public class UIManager : Singleton<UIManager>
 			Debug.Log("Showing Gamepad UI.");
 			break;
 		case DeviceType.Unknown:
-			throw new ArgumentOutOfRangeException(nameof(deviceType),
-												  deviceType, null);
+			throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
 		}
 	}
 
@@ -69,17 +69,20 @@ public class UIManager : Singleton<UIManager>
 		if (!UnitManager.Instance)
 			return;
 
-		Vector2Int capitalAxial = Hex.OffsetToAxial(GameManager.Instance.PlayerCapitalPosition);
+		HexCoords capitalCoords = GameManager.Instance.PlayerCapitalPosition;
+
 		const int SEARCH_RANGE = 1;
 		for (var radius = 1; radius <= SEARCH_RANGE; radius++)
-			foreach (Vector2Int hexAxial in Hex.GetRing(capitalAxial, radius))
+			foreach (HexCoords hexCoords in Hex.GetRing(capitalCoords, radius))
 			{
-				Hex hex = GameManager.Instance.HexMap.Find(hexAxial);
-				if (hex == null) continue;
+				Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
+				if (hex == null || !hex.Visuals) continue;
 
-				hex.Unit = UnitManager.Instance.CreateUnit(hexAxial, Color.blue);
+				Unit unit = UnitManager.Instance.CreateUnit(hexCoords, Color.blue);
 				// Exit on successful unit creation.
-				if (hex.Unit) return;
+				if (!unit) continue;
+				hex.UnitID = unit.ID;
+				return;
 			}
 	}
 }

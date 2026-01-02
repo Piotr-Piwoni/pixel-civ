@@ -1,5 +1,7 @@
 using System;
 using PixelCiv.Managers;
+using PixelCiv.Utilities;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using DeviceType = PixelCiv.Managers.DeviceType;
@@ -8,12 +10,15 @@ namespace PixelCiv
 {
 public class PlayerController : MonoBehaviour
 {
-	[SerializeField, Header("Movement Settings"), Tooltip("Speed of the player movement"),]
+	[SerializeField, Header("Movement Settings"),
+	 Tooltip("Speed of the player movement"),]
 	private float _MoveSpeed = 5f;
 	[SerializeField, Tooltip("Speed multiplier applied when the player is sprinting."),]
 	private float _SprintMult = 1.5f;
 
 	private Camera _Camera;
+	[ShowInInspector, ReadOnly,]
+	private Guid _SelectedUnit;
 
 
 	private void Awake()
@@ -26,6 +31,7 @@ public class PlayerController : MonoBehaviour
 	{
 		Vector2 moveInput = InputManager.Instance.MoveInput;
 		MoveCharacter(moveInput);
+		MoveUnit();
 	}
 
 	private void OnEnable()
@@ -37,7 +43,6 @@ public class PlayerController : MonoBehaviour
 	private void OnDisable()
 	{
 		if (!InputManager.Instance) return;
-
 		InputManager.Instance.OnInteractionPressed -= OnSelect;
 		InputManager.Instance.OnDeviceChanged -= HandleDeviceChanged;
 	}
@@ -73,9 +78,37 @@ public class PlayerController : MonoBehaviour
 		transform.Translate(movement, Space.World);
 	}
 
+	private void MoveUnit()
+	{
+		if (_SelectedUnit == Guid.Empty || !Mouse.current.rightButton.wasPressedThisFrame)
+			return;
+
+		HexCoords mouseHexCoords =
+				Utils.GetMouseHexCoords(_Camera, GameManager.Instance.Grid);
+		Hex targetHex = GameManager.Instance.HexMap.Find(mouseHexCoords);
+		if (targetHex == null) return;
+
+		UnitManager.Instance.Move(_SelectedUnit, targetHex.Coordinates);
+		_SelectedUnit = Guid.Empty;
+		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
+	}
+
 	private void OnSelect()
 	{
-		Debug.Log("Selected!");
+		if (!GameManager.Instance) return;
+
+		HexCoords mouseHexCoords =
+				Utils.GetMouseHexCoords(_Camera, GameManager.Instance.Grid);
+		Hex selectedHex = GameManager.Instance.HexMap.Find(mouseHexCoords);
+		if (selectedHex == null) return;
+
+		_SelectedUnit = selectedHex.UnitID;
+		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
+		Debug.Log("--- Hex ---\n" +
+				  $"Cell Coord: {selectedHex.Coordinates.Offset}\n" +
+				  $"Axial Coord: {selectedHex.Coordinates.Axial}\n" +
+				  $"Unit ID: {selectedHex.UnitID}\n" +
+				  $"Building: {selectedHex.Building}");
 	}
 }
 }
