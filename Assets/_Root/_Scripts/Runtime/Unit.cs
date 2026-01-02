@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using PixelCiv.Managers;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -15,12 +16,18 @@ public class Unit : MonoBehaviour
 
 	[ShowInInspector, ReadOnly,]
 	public Color Colour { get; private set; }
-	[ShowInInspector, ReadOnly,]
+	[ShowInInspector]
 	public Guid ID { get; private set; }
 	[ShowInInspector, ReadOnly,]
 	public Vector3Int CellPosition { get; private set; }
 	[ShowInInspector, ReadOnly,]
-	public Vector3Int DestinationCell { get; private set; }
+	public Vector3Int NextMoveCell { get; private set; }
+
+	// Debugging fields.
+	#if UNITY_EDITOR
+	[SerializeField, ReadOnly,]
+	private Vector3Int _DestinationCell;
+	#endif
 
 	private bool _IsMoving;
 	private Queue<Vector3Int> _Path = new();
@@ -36,8 +43,8 @@ public class Unit : MonoBehaviour
 	{
 		if (!_IsMoving || _Path.Count == 0) return;
 
-		DestinationCell = _Path.Peek();
-		Vector3 worldPos = GameManager.Instance.Grid.CellToWorld(DestinationCell);
+		NextMoveCell = _Path.Peek();
+		Vector3 worldPos = GameManager.Instance.Grid.CellToWorld(NextMoveCell);
 		// Move towards target.
 		transform.position = Vector3.MoveTowards(transform.position, worldPos,
 												 MOVE_SPEED * Time.deltaTime);
@@ -46,9 +53,15 @@ public class Unit : MonoBehaviour
 		if (!(Vector3.Distance(transform.position, worldPos) < 0.01f)) return;
 		CellPosition = _Path.Dequeue();
 
+		// Reset fields related to movement and invoke the movement completed event.
 		if (_Path.Count != 0) return;
 		_IsMoving = false;
+		NextMoveCell = Vector3Int.zero;
 		OnMovementCompleted?.Invoke(ID);
+
+		#if UNITY_EDITOR
+		_DestinationCell = Vector3Int.zero;
+		#endif
 	}
 
 	public void Initialize(Guid id, Color colour, Vector3Int cellPosition)
@@ -67,6 +80,10 @@ public class Unit : MonoBehaviour
 
 		_Path = new Queue<Vector3Int>(path);
 		_IsMoving = true;
+
+		#if UNITY_EDITOR
+		_DestinationCell = _Path.Last();
+		#endif
 	}
 
 	private void SetColour()

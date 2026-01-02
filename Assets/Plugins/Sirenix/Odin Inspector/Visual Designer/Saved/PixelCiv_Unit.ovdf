@@ -1,0 +1,36 @@
+OVDF v1.1
+PixelCiv.Unit, Project
+MetaGuid:6788f9b7823149e08e5d0df12bacdcd5
+
+# $4HoehgPrpVg5p45TJ7BcUX
+Position: $root:27
++ [Sirenix.OdinInspector.FoldoutGroupAttribute]
+	GroupName = "Movement Information"
+
+# ID
+Position: $root:6
++ [Sirenix.OdinInspector.DisplayAsStringAttribute]
+	Alignment = Center
+	Overflow = False
+- [Sirenix.OdinInspector.ReadOnlyAttribute]
+
+# Colour
+Position: $root:7
+
+# CellPosition
+Position: $root:26
++ [Sirenix.OdinInspector.ReadOnlyAttribute]
+
+# _DestinationCell
+Position: $4HoehgPrpVg5p45TJ7BcUX:1
++ [Sirenix.OdinInspector.GUIColorAttribute]
+	Color = #E61717FF
+
+# NextMoveCell
+Position: $4HoehgPrpVg5p45TJ7BcUX:0
++ [Sirenix.OdinInspector.GUIColorAttribute]
+	Color = #17E6DEFF
++ [Sirenix.OdinInspector.LabelTextAttribute]
+	Text = "Next Cell to Move To"
+	NicifyText = True
+	Icon = None
