@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using PixelCiv.Managers;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace PixelCiv
@@ -21,6 +23,7 @@ public class Unit : MonoBehaviour
 	public Vector3Int DestinationCell { get; private set; }
 
 	private bool _IsMoving;
+	private Queue<Vector3Int> _Path = new();
 	private SpriteRenderer _Renderer;
 
 
@@ -31,18 +34,20 @@ public class Unit : MonoBehaviour
 
 	private void Update()
 	{
-		// TODO: Create proper tile based movement.
-		if (!_IsMoving) return;
+		if (!_IsMoving || _Path.Count == 0) return;
 
-		Vector3 targetWorld = GameManager.Instance.Grid.CellToWorld(DestinationCell);
-
+		DestinationCell = _Path.Peek();
+		Vector3 worldPos = GameManager.Instance.Grid.CellToWorld(DestinationCell);
 		// Move towards target.
-		transform.position = Vector3.MoveTowards(transform.position, targetWorld,
+		transform.position = Vector3.MoveTowards(transform.position, worldPos,
 												 MOVE_SPEED * Time.deltaTime);
 
-		if (!(Vector3.Distance(transform.position, targetWorld) < 0.01f)) return;
+		// If within margin, set the cell position.
+		if (!(Vector3.Distance(transform.position, worldPos) < 0.01f)) return;
+		CellPosition = _Path.Dequeue();
+
+		if (_Path.Count != 0) return;
 		_IsMoving = false;
-		CellPosition = DestinationCell;
 		OnMovementCompleted?.Invoke(ID);
 	}
 
@@ -56,9 +61,11 @@ public class Unit : MonoBehaviour
 		SetColour();
 	}
 
-	public void Move(Vector3Int targetCell)
+	public void SetPath(List<Vector3Int> path)
 	{
-		DestinationCell = targetCell;
+		if (path.IsNullOrEmpty()) return;
+
+		_Path = new Queue<Vector3Int>(path);
 		_IsMoving = true;
 	}
 
