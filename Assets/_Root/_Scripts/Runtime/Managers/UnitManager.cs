@@ -102,8 +102,7 @@ public class UnitManager : Singleton<UnitManager>
 			{
 				// Ignore invalid tiles.
 				Hex neighbourTile = GameManager.Instance.HexMap.Find(neighbour);
-				if (neighbourTile == null || neighbourTile.UnitID != Guid.Empty ||
-					!neighbourTile.Visuals)
+				if (neighbourTile == null || !neighbourTile.Visuals)
 					continue;
 
 				// Calculate the assumed movement cost from the current tile to it's neighbour.
