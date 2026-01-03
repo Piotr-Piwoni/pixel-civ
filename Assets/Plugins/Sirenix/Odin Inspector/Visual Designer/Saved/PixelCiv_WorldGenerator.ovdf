@@ -8,22 +8,31 @@ Position: $root:0
 	GroupName = "References"
 
 # _SpawnerPrefab
-Position: $C1FKqwJ6Yqxn5qaNXSYWsb:4
+Position: $C1FKqwJ6Yqxn5qaNXSYWsb:5
 + [Sirenix.OdinInspector.RequiredAttribute]
 + [Sirenix.OdinInspector.AssetsOnlyAttribute]
 
 # _CastleTile
-Position: $C1FKqwJ6Yqxn5qaNXSYWsb:3
+Position: $C1FKqwJ6Yqxn5qaNXSYWsb:4
 + [Sirenix.OdinInspector.RequiredAttribute]
 
 # _GroundTile
-Position: $C1FKqwJ6Yqxn5qaNXSYWsb:2
+Position: $C1FKqwJ6Yqxn5qaNXSYWsb:3
 + [Sirenix.OdinInspector.RequiredAttribute]
 
 # _DetailsTilemap
-Position: $C1FKqwJ6Yqxn5qaNXSYWsb:1
+Position: $C1FKqwJ6Yqxn5qaNXSYWsb:2
 + [Sirenix.OdinInspector.RequiredAttribute]
 
 # _GroundTilemap
+Position: $C1FKqwJ6Yqxn5qaNXSYWsb:1
++ [Sirenix.OdinInspector.RequiredAttribute]
+
+# _TileSet
 Position: $C1FKqwJ6Yqxn5qaNXSYWsb:0
 + [Sirenix.OdinInspector.RequiredAttribute]
++ [Sirenix.OdinInspector.AssetsOnlyAttribute]
+* [Sirenix.OdinInspector.OnValueChangedAttribute]
+	IncludeChildren = True
++ [Sirenix.OdinInspector.InlineEditorAttribute]
+	ObjectFieldMode = Foldout

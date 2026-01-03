@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -91,21 +92,20 @@ public class Hex
 			new(+1, 0),
 	};
 
-
 	public HexCoords Coordinates { get; }
 	public TileBase Building;
+	public TileType Type;
 	public Guid UnitID = Guid.Empty;
-	public TileBase Visuals;
 
 
-	public Hex(HexCoords coords, TileBase visuals = null)
+	public Hex(HexCoords coords, TileType? type = null)
 	{
 		Coordinates = coords;
-		Visuals = visuals;
+		Type = type ?? TileType.Water;
 	}
 
-	public Hex(int q, int r, TileBase visuals = null) :
-			this(new HexCoords(q, r), visuals) { }
+	public Hex(int q, int r, TileType? type = null) :
+			this(new HexCoords(q, r), type) { }
 
 	public int DistanceTo(Hex other)
 	{
@@ -193,9 +193,9 @@ public class HexMap
 		_HexTiles.Clear();
 	}
 
-	public TileBase[] GetTileMap(Vector2Int worldSize)
+	public TileType[] GetTileMap(Vector2Int worldSize)
 	{
-		var tiles = new TileBase[worldSize.x * worldSize.y];
+		var tiles = new TileType[worldSize.x * worldSize.y];
 		foreach (Hex hex in _HexTiles.Values)
 		{
 			// Skip hexes outside the render bounds.
@@ -204,38 +204,15 @@ public class HexMap
 				continue;
 
 			int index = hex.Coordinates.Offset.y * worldSize.x + hex.Coordinates.Offset.x;
-			tiles[index] = hex.Visuals;
+			tiles[index] = hex.Type;
 		}
 
 		return tiles;
 	}
 
-	public TileBase[] GetTileMap()
+	public Hex[] GetMap()
 	{
-		Vector2Int min = new(int.MaxValue, int.MaxValue);
-		Vector2Int max = new(int.MinValue, int.MinValue);
-		foreach (Hex hex in _HexTiles.Values)
-		{
-			min.x = Mathf.Min(min.x, hex.Coordinates.Offset.x);
-			min.y = Mathf.Min(min.y, hex.Coordinates.Offset.y);
-			max.x = Mathf.Max(max.x, hex.Coordinates.Offset.x);
-			max.y = Mathf.Max(max.y, hex.Coordinates.Offset.y);
-		}
-
-		int width = max.x - min.x + 1;
-		int height = max.y - min.y + 1;
-
-		var tiles = new TileBase[width * height];
-		foreach (Hex hex in _HexTiles.Values)
-		{
-			int x = hex.Coordinates.Offset.x - min.x;
-			int y = hex.Coordinates.Offset.y - min.y;
-
-			int index = y * width + x;
-			tiles[index] = hex.Visuals;
-		}
-
-		return tiles;
+		return _HexTiles.Select(n => n.Value).ToArray();
 	}
 }
 }

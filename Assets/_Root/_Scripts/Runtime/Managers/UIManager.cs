@@ -76,7 +76,7 @@ public class UIManager : Singleton<UIManager>
 			foreach (HexCoords hexCoords in Hex.GetRing(capitalCoords, radius))
 			{
 				Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
-				if (hex == null || !hex.Visuals) continue;
+				if (hex is not { Type: TileType.Grassland, }) continue;
 
 				Unit unit = UnitManager.Instance.CreateUnit(hexCoords, Color.blue);
 				// Exit on successful unit creation.
