@@ -5,7 +5,6 @@ using PixelCiv.Scriptable_Objects;
 using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
-using UnityEditor;
 using UnityEngine;
 
 namespace PixelCiv.Managers
@@ -18,6 +17,7 @@ public class UnitManager : Singleton<UnitManager>
 
 	private readonly List<Unit> _Units = new();
 	private List<UnitStats> _UnitTypesData = new();
+	private UnitStats _DefaultStats;
 
 
 	protected override void Awake()
@@ -27,19 +27,8 @@ public class UnitManager : Singleton<UnitManager>
 		_UnitTypesData = Resources.LoadAll<UnitStats>("Game/Units").ToList();
 
 		if (_UnitTypesData.IsNullOrEmpty())
-		{
-			// Create a default UnitStats asset at runtime.
-			var defaultStats = ScriptableObject.CreateInstance<UnitStats>();
-
-			#if UNITY_EDITOR
-			var path = "Assets/Resources/Game/Units/DefaultUnitStats.asset";
-			AssetDatabase.CreateAsset(defaultStats, path);
-			AssetDatabase.SaveAssets();
-			AssetDatabase.Refresh();
-			#endif
-
-			_UnitTypesData = new List<UnitStats> { defaultStats, };
-		}
+				// Create a default UnitStats asset at runtime.
+			_DefaultStats = ScriptableObject.CreateInstance<UnitStats>();
 	}
 
 
@@ -58,10 +47,21 @@ public class UnitManager : Singleton<UnitManager>
 			return null;
 		}
 
+		// Try and get desired Unit type stats.
+		UnitStats unitStats = _UnitTypesData.Find(n => n.Type == type);
+		if (!unitStats)
+		{
+			Debug.LogWarning($"No UnitStats found for type {type}, using default.");
+			// Create a default UnitStats asset at runtime.
+			if (!_DefaultStats)
+				_DefaultStats = ScriptableObject.CreateInstance<UnitStats>();
+			// Fallback to default stats.
+			unitStats = _DefaultStats;
+		}
+
 		// Create Unit.
-		UnitStats UnitStats = _UnitTypesData.Find(n => n.Type == type);
 		var unit = Instantiate(_UnitPrefab, transform).GetComponent<Unit>();
-		unit.Initialize(Guid.NewGuid(), UnitStats, colour ?? Color.white, position);
+		unit.Initialize(Guid.NewGuid(), unitStats, colour ?? Color.white, position);
 		unit.OnMovementCompleted += CompleteMoveOrder;
 
 
