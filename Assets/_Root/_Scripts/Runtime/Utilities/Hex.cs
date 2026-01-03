@@ -101,7 +101,7 @@ public class Hex
 	public Hex(HexCoords coords, TileType? type = null)
 	{
 		Coordinates = coords;
-		Type = type ?? TileType.Water;
+		Type = type ?? TileType.Sea;
 	}
 
 	public Hex(int q, int r, TileType? type = null) :

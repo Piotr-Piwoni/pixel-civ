@@ -15,7 +15,7 @@ public class TileTypeSet : SerializedScriptableObject
 	private Dictionary<TileType, Color> _Set = new()
 	{
 			[TileType.Grassland] = Color.softGreen,
-			[TileType.Water] = Color.darkBlue,
+			[TileType.Sea] = Color.darkBlue,
 			[TileType.Mountain] = Color.gray3,
 	};
 	[SerializeField]

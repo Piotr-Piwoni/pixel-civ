@@ -10,7 +10,6 @@ using Random = UnityEngine.Random;
 
 namespace PixelCiv
 {
-[ExecuteAlways]
 public class WorldGenerator : MonoBehaviour
 {
 	[SerializeField, MinValue(1),]
@@ -25,6 +24,8 @@ public class WorldGenerator : MonoBehaviour
 	private float _NoiseScale = 0.25f;
 	[SerializeField, Range(0f, 1f),]
 	private float _SeaLevel = 0.4f;
+	[SerializeField, Range(0f, 1f),]
+	private float _MountainLevel = 0.7f;
 	[SerializeField]
 	private GameObject _SpawnerPrefab;
 	[SerializeField, OnValueChanged(nameof(UpdateTileMapColours)),]
@@ -65,7 +66,14 @@ public class WorldGenerator : MonoBehaviour
 			var hex = new Hex(q, r);
 			float noise = Mathf.PerlinNoise(hex.Coordinates.Offset.x * _NoiseScale,
 											hex.Coordinates.Offset.y * _NoiseScale);
-			hex.Type = noise > _SeaLevel ? TileType.Grassland : TileType.Water;
+
+			if (noise > _MountainLevel)
+				hex.Type = TileType.Mountain;
+			else if (noise > _SeaLevel && noise < _MountainLevel)
+				hex.Type = TileType.Grassland;
+			else
+				hex.Type = TileType.Sea;
+
 			GameManager.Instance.HexMap.Add(hex);
 		}
 
@@ -140,7 +148,7 @@ public class WorldGenerator : MonoBehaviour
 
 public enum TileType
 {
-	Water,
+	Sea,
 	Grassland,
 	Mountain,
 }

@@ -998,10 +998,10 @@ MonoBehaviour:
   _WorldSize: {x: 20, y: 15}
   _GroundTilemap: {fileID: 1534370461}
   _DetailsTilemap: {fileID: 483896147}
-  _GroundTile: {fileID: 11400000, guid: fbbb17ade830aa949a5b47eec011c996, type: 2}
   _CastleTile: {fileID: 11400000, guid: 7f44ee97f6f949440be3acdb971566de, type: 2}
   _NoiseScale: 0.25
   _SeaLevel: 0.4
+  _MountainLevel: 0.7
   _SpawnerPrefab: {fileID: 1314214250009638414, guid: 539bbdae8f6cc884e8d733aa4b8b1b29, type: 3}
   _TileSet: {fileID: 11400000, guid: 0fa5ed0f3c3b3624e9f85392b345bf78, type: 2}
 --- !u!4 &1415075476 stripped
