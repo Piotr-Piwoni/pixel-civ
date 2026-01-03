@@ -1,10 +1,11 @@
 using System;
 using PixelCiv.Managers;
 using PixelCiv.Utilities;
+using PixelCiv.Utilities.Hex;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using DeviceType = PixelCiv.Managers.DeviceType;
+using DeviceType = PixelCiv.Utilities.Types.DeviceType;
 
 namespace PixelCiv
 {

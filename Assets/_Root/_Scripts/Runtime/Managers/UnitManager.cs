@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PixelCiv.Components;
 using PixelCiv.Scriptable_Objects;
 using PixelCiv.Utilities;
+using PixelCiv.Utilities.Hex;
+using PixelCiv.Utilities.Types;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;

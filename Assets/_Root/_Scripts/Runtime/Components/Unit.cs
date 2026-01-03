@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using PixelCiv.Managers;
 using PixelCiv.Scriptable_Objects;
-using PixelCiv.Utilities;
+using PixelCiv.Utilities.Hex;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 
-namespace PixelCiv
+namespace PixelCiv.Components
 {
 [HideMonoScript]
 public class Unit : MonoBehaviour
@@ -97,11 +97,5 @@ public class Unit : MonoBehaviour
 		if (_Renderer)
 			_Renderer.color = Civilization;
 	}
-}
-
-public enum UnitType
-{
-	Footman,
-	Archer,
 }
 }
