@@ -31,6 +31,10 @@ public class WorldGenerator : MonoBehaviour
 	[SerializeField, OnValueChanged(nameof(UpdateTileMapColours)),]
 	private TileTypeSet _TileSet;
 
+	#if UNITY_EDITOR
+	private readonly HexMap _EditorMap = new();
+	#endif
+
 	private GameObject _PlayerSpawner;
 
 
@@ -44,6 +48,9 @@ public class WorldGenerator : MonoBehaviour
 	{
 		_GroundTilemap?.ClearAllTiles();
 		_DetailsTilemap?.ClearAllTiles();
+		#if UNITY_EDITOR
+		_EditorMap.Clear();
+		#endif
 
 		if (!Application.isPlaying) return;
 
@@ -58,6 +65,7 @@ public class WorldGenerator : MonoBehaviour
 
 		Clear();
 		Random.InitState(Environment.TickCount);
+		HexMap hexMap = GetHexMap();
 
 		// Generate hex map.
 		for (var r = 0; r < _WorldSize.y; r++)
@@ -74,12 +82,12 @@ public class WorldGenerator : MonoBehaviour
 			else
 				hex.Type = TileType.Sea;
 
-			GameManager.Instance.HexMap.Add(hex);
+			hexMap.Add(hex);
 		}
 
 		// Decide player capital.
-		TileType[] tiles = GameManager.Instance.HexMap.GetTileMap(_WorldSize);
-		if (Application.isPlaying && _DetailsTilemap)
+		TileType[] tiles = hexMap.GetTileMap(_WorldSize);
+		if (_DetailsTilemap)
 			PlacePlayerCapital(tiles);
 
 		// Fill ground tiles.
@@ -88,9 +96,19 @@ public class WorldGenerator : MonoBehaviour
 		_GroundTilemap.SetTilesBlock(bounds, tileHexes);
 
 		// Colour tiles.
-		Hex[] map = GameManager.Instance.HexMap.GetMap();
+		Hex[] map = hexMap.GetMap();
 		foreach (Hex tile in map)
 			_GroundTilemap.SetColor(tile.Coordinates.Offset, _TileSet.Set[tile.Type]);
+	}
+
+	private HexMap GetHexMap()
+	{
+		if (Application.isPlaying && GameManager.Instance)
+			return GameManager.Instance.HexMap;
+
+		#if UNITY_EDITOR
+		return _EditorMap;
+		#endif
 	}
 
 	private void PlacePlayerCapital(TileType[] tiles)
@@ -107,14 +125,17 @@ public class WorldGenerator : MonoBehaviour
 			int r = index / _WorldSize.x;
 			int q = index % _WorldSize.x - (r - (r & 1)) / 2;
 
-			Hex foundHex = GameManager.Instance.HexMap.Find(new HexCoords(q, r));
+			Hex foundHex = GetHexMap().Find(new HexCoords(q, r));
 			foundHex.Building = _CastleTile;
 
-			GameManager.Instance.SetPlayerCapital(foundHex.Coordinates);
+			if (Application.isPlaying)
+				GameManager.Instance.SetPlayerCapital(foundHex.Coordinates);
 			_DetailsTilemap.SetTile(foundHex.Coordinates.Offset, foundHex.Building);
 
 			hasFoundCapitalTile = true;
-			SpawnPlayerSpawner(foundHex.Coordinates.Offset);
+
+			if (Application.isPlaying)
+				SpawnPlayerSpawner(foundHex.Coordinates.Offset);
 			break;
 		}
 
@@ -137,9 +158,9 @@ public class WorldGenerator : MonoBehaviour
 	#if UNITY_EDITOR
 	private void UpdateTileMapColours()
 	{
-		if (!GameManager.Instance || !_GroundTilemap || !_TileSet) return;
+		if (!_GroundTilemap || !_TileSet) return;
 
-		Hex[] map = GameManager.Instance.HexMap.GetMap();
+		Hex[] map = GetHexMap().GetMap();
 		foreach (Hex tile in map)
 			_GroundTilemap.SetColor(tile.Coordinates.Offset, _TileSet.Set[tile.Type]);
 	}
