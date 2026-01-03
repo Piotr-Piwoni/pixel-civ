@@ -29,7 +29,7 @@ public class AudioSystem : Singleton<AudioSystem>
 		base.Awake();
 
 		// Load the AudioMixer.
-		_Mixer = Resources.Load<AudioMixer>("GameAudioMixer");
+		_Mixer = Resources.Load<AudioMixer>("Game/GameAudioMixer");
 
 		// The AudioSource on this object will act as the music source.
 		_MusicSrc = GetComponent<AudioSource>();

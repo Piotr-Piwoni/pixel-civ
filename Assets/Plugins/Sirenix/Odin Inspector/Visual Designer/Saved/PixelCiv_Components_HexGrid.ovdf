@@ -1,0 +1,13 @@
+OVDF v1.1
+PixelCiv.Components.HexGrid, Project
+MetaGuid:b17d26e17d5b4ee980b9021e68b6d914
+
+# Grid
+Position: $root:1
+
+# _Settings
++ [Sirenix.OdinInspector.AssetsOnlyAttribute]
+* [Sirenix.OdinInspector.OnValueChangedAttribute]
+	IncludeChildren = True
++ [Sirenix.OdinInspector.InlineEditorAttribute]
+	ObjectFieldMode = Foldout
