@@ -14,4 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Sirenix.OdinInspector.Editor.dll::Sirenix.OdinInspector.Editor.OdinVisualDesignerConfig
   SerializedFavoriteAttributes:
   - TypeBinding: Sirenix.OdinInspector.RequiredAttribute, Sirenix.OdinInspector.Attributes
+  - TypeBinding: Sirenix.OdinInspector.LabelWidthAttribute, Sirenix.OdinInspector.Attributes
+  - TypeBinding: Sirenix.OdinInspector.MinValueAttribute, Sirenix.OdinInspector.Attributes
   savePath: Assets/Plugins/Sirenix/Odin Inspector/Visual Designer/Saved

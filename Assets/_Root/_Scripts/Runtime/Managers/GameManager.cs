@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace PixelCiv.Managers
 {
+[HideMonoScript]
 public class GameManager : PersistentSingleton<GameManager>
 {
 	[TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),

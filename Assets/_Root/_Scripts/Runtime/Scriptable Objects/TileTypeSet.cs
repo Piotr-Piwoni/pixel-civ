@@ -5,7 +5,8 @@ using UnityEngine.Tilemaps;
 
 namespace PixelCiv.Scriptable_Objects
 {
-[CreateAssetMenu(fileName = "TileTypeSet", menuName = "Game/TileTypeSet", order = 0)]
+[CreateAssetMenu(fileName = "TileTypeSet", menuName = "Game/TileTypeSet", order = 0),
+ HideMonoScript,]
 public class TileTypeSet : SerializedScriptableObject
 {
 	public Dictionary<TileType, Color> Set => _Set;

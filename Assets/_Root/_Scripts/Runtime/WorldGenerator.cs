@@ -10,6 +10,7 @@ using Random = UnityEngine.Random;
 
 namespace PixelCiv
 {
+[HideMonoScript]
 public class WorldGenerator : MonoBehaviour
 {
 	[SerializeField, MinValue(1),]

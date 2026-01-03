@@ -1,26 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PixelCiv.Scriptable_Objects;
 using PixelCiv.Utilities;
+using Sirenix.OdinInspector;
+using Sirenix.Utilities;
+using UnityEditor;
 using UnityEngine;
 
 namespace PixelCiv.Managers
 {
+[HideMonoScript]
 public class UnitManager : Singleton<UnitManager>
 {
 	[SerializeField]
 	private GameObject _UnitPrefab;
 
 	private readonly List<Unit> _Units = new();
+	private List<UnitStats> _UnitTypesData = new();
+
+
+	protected override void Awake()
+	{
+		base.Awake();
+
+		_UnitTypesData = Resources.LoadAll<UnitStats>("Game/Units").ToList();
+
+		if (_UnitTypesData.IsNullOrEmpty())
+		{
+			// Create a default UnitStats asset at runtime.
+			var defaultStats = ScriptableObject.CreateInstance<UnitStats>();
+
+			#if UNITY_EDITOR
+			var path = "Assets/Resources/Game/Units/DefaultUnitStats.asset";
+			AssetDatabase.CreateAsset(defaultStats, path);
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
+			#endif
+
+			_UnitTypesData = new List<UnitStats> { defaultStats, };
+		}
+	}
 
 
 	/// <summary>
 	///     Create a new Unit object.
 	/// </summary>
+	/// <param name="type"></param>
 	/// <param name="position">The Unit's spawning hex position.</param>
 	/// <param name="colour">Optional colour to set the sprite tint to.</param>
 	/// <returns>The created Unit object.</returns>
-	public Unit CreateUnit(HexCoords position, Color? colour = null)
+	public Unit CreateUnit(UnitType type, HexCoords position, Color? colour = null)
 	{
 		if (_Units.Any(unit => unit.Position == position))
 		{
@@ -28,9 +58,13 @@ public class UnitManager : Singleton<UnitManager>
 			return null;
 		}
 
+		// Create Unit.
+		UnitStats UnitStats = _UnitTypesData.Find(n => n.Type == type);
 		var unit = Instantiate(_UnitPrefab, transform).GetComponent<Unit>();
-		unit.Initialize(Guid.NewGuid(), colour ?? Color.white, position);
+		unit.Initialize(Guid.NewGuid(), UnitStats, colour ?? Color.white, position);
 		unit.OnMovementCompleted += CompleteMoveOrder;
+
+
 		_Units.Add(unit);
 		return unit;
 	}

@@ -8,6 +8,7 @@ using DeviceType = PixelCiv.Managers.DeviceType;
 
 namespace PixelCiv
 {
+[HideMonoScript]
 public class PlayerController : MonoBehaviour
 {
 	[SerializeField, Header("Movement Settings"),

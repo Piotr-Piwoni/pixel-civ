@@ -10,7 +10,7 @@ using Debug = UnityEngine.Debug;
 
 namespace PixelCiv.Systems
 {
-[RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(AudioSource)), HideMonoScript,]
 public class AudioSystem : Singleton<AudioSystem>
 {
 	[SerializeField, TabGroup("", "Debug"),]

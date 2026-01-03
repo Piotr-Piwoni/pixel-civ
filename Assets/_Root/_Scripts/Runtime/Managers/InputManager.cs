@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 
 namespace PixelCiv.Managers
 {
+[HideMonoScript]
 public class InputManager : PersistentSingleton<InputManager>
 {
 	public event Action OnInteractionPressed;

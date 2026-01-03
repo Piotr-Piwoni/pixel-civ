@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PixelCiv.Managers;
+using PixelCiv.Scriptable_Objects;
 using PixelCiv.Utilities;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -9,20 +10,21 @@ using UnityEngine;
 
 namespace PixelCiv
 {
+[HideMonoScript]
 public class Unit : MonoBehaviour
 {
 	public event Action<Guid> OnMovementCompleted;
 
-	private const float MOVE_SPEED = 5f;
-
 	[ShowInInspector, ReadOnly,]
-	public Color Colour { get; private set; }
+	public Color Civilization { get; private set; }
 	[ShowInInspector]
 	public Guid ID { get; private set; }
 	[ShowInInspector, ReadOnly,]
 	public HexCoords NextHexMove { get; private set; }
 	[ShowInInspector, ReadOnly,]
 	public HexCoords Position { get; private set; }
+	[ShowInInspector, ReadOnly,]
+	public UnitStats Stats { get; private set; }
 
 	private bool _IsMoving;
 
@@ -49,7 +51,7 @@ public class Unit : MonoBehaviour
 		Vector3 worldPos = GameManager.Instance.Grid.CellToWorld(NextHexMove.Offset);
 		// Move towards target.
 		transform.position = Vector3.MoveTowards(transform.position, worldPos,
-												 MOVE_SPEED * Time.deltaTime);
+												 Stats.MoveSpeed * Time.deltaTime);
 
 		// If within margin, set the cell position.
 		if (!(Vector3.Distance(transform.position, worldPos) < 0.01f)) return;
@@ -66,10 +68,11 @@ public class Unit : MonoBehaviour
 		#endif
 	}
 
-	public void Initialize(Guid id, Color colour, HexCoords position)
+	public void Initialize(Guid id, UnitStats stats, Color colour, HexCoords position)
 	{
 		ID = id;
-		Colour = colour;
+		Stats = stats;
+		Civilization = colour;
 		Position = position;
 
 		transform.position =
@@ -92,7 +95,13 @@ public class Unit : MonoBehaviour
 	private void SetColour()
 	{
 		if (_Renderer)
-			_Renderer.color = Colour;
+			_Renderer.color = Civilization;
 	}
+}
+
+public enum UnitType
+{
+	Footman,
+	Archer,
 }
 }

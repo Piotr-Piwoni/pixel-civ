@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 
 namespace PixelCiv.Managers
 {
+[HideMonoScript]
 public class UIManager : Singleton<UIManager>
 {
 	[SerializeField,
@@ -78,7 +79,8 @@ public class UIManager : Singleton<UIManager>
 				Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
 				if (hex is not { Type: TileType.Grassland, }) continue;
 
-				Unit unit = UnitManager.Instance.CreateUnit(hexCoords, Color.blue);
+				Unit unit = UnitManager.Instance.CreateUnit(
+						UnitType.Footman, hexCoords, Color.blue);
 				// Exit on successful unit creation.
 				if (!unit) continue;
 				hex.UnitID = unit.ID;

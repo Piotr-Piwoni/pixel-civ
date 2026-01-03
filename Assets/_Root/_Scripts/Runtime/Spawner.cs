@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace PixelCiv
 {
-[ExecuteInEditMode]
+[ExecuteInEditMode, HideMonoScript,]
 public class Spawner : MonoBehaviour
 {
 	public SpawnerTag SpawnerTag;
@@ -56,6 +56,6 @@ public enum SpawnerTag
 	Player3 = 2,
 	Player4 = 3,
 	Npc = 4,
-	Enemy = 5
+	Enemy = 5,
 }
 }
