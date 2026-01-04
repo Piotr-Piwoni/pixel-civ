@@ -54,14 +54,11 @@ public class Hex
 		return neighbours;
 	}
 
-	public List<HexCoords> GetRing(int radius)
+	public HexCoords[] GetRing(int radius)
 	{
-		var results = new List<HexCoords>();
+		var results = new List<HexCoords> { Coordinates, };
 		if (radius == 0)
-		{
-			results.Add(Coordinates);
-			return results;
-		}
+			return results.ToArray();
 
 		// Start at top-right.
 		Vector2Int hex = Coordinates.Axial + _AxialDirections[4] * radius;
@@ -73,17 +70,15 @@ public class Hex
 			hex += _AxialDirections[i];
 		}
 
-		return results;
+		return results.ToArray();
 	}
 
-	public static List<HexCoords> GetRing(HexCoords center, int radius)
+	public static HexCoords[] GetRing(HexCoords center, int radius)
 	{
-		var results = new List<HexCoords>();
+		var results = new List<HexCoords> { center, };
+
 		if (radius == 0)
-		{
-			results.Add(center);
-			return results;
-		}
+			return results.ToArray();
 
 		// Start at top-right.
 		Vector2Int hex = center.Axial + _AxialDirections[4] * radius;
@@ -95,31 +90,25 @@ public class Hex
 			hex += _AxialDirections[i];
 		}
 
-		return results;
+		return results.ToArray();
 	}
 
-	public List<HexCoords> GetSpiral(int radius)
+	public HexCoords[] GetSpiral(int radius)
 	{
-		List<HexCoords> spiral = new();
+		List<HexCoords> spiral = new() { Coordinates, };
 		for (var i = 1; i <= radius; i++)
-		{
-			List<HexCoords> ring = GetRing(i);
-			spiral.AddRange(ring);
-		}
+			spiral.AddRange(GetRing(i));
 
-		return spiral;
+		return spiral.ToArray();
 	}
 
-	public static List<HexCoords> GetSpiral(HexCoords center, int radius)
+	public static HexCoords[] GetSpiral(HexCoords center, int radius)
 	{
-		List<HexCoords> spiral = new();
+		List<HexCoords> spiral = new() { center, };
 		for (var i = 1; i <= radius; i++)
-		{
-			List<HexCoords> ring = GetRing(center, i);
-			spiral.AddRange(ring);
-		}
+			spiral.AddRange(GetRing(center, i));
 
-		return spiral;
+		return spiral.ToArray();
 	}
 }
 }

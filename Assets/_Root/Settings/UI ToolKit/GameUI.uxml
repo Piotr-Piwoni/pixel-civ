@@ -1,5 +1,8 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/_Root/Settings/UI%20ToolKit/Styles/style.uss?fileID=7433441132597879392&amp;guid=b5aac362247f14041840ca3282d5c193&amp;type=3#style"/>
-    <ui:Button text="Spawn Units" name="SpawnUnitsButton" class="button" style="position: absolute; width: 375px; top: 30px; left: 30px; height: 90px;"/>
+    <ui:VisualElement name="SpawnButtonGroup" style="position: absolute; top: 30px; left: 30px; width: 246px; height: 215px; justify-content: center; align-items: center;">
+        <ui:Button text="Spawn Player Units" name="SpawnPlayerUnitsButton" class="button" style="width: 100%; height: auto;"/>
+        <ui:Button text="Spawn Units" name="SpawnUnitsButton" class="button" style="width: 100%; height: auto;"/>
+    </ui:VisualElement>
     <ui:Button text="Toggle Territory View" name="ToggleTerritoryButton" class="button" style="width: 349px; position: absolute; top: auto; left: auto; bottom: 30px; right: 30px;"/>
 </ui:UXML>

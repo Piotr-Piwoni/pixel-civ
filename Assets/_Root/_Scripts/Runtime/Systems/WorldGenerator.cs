@@ -53,12 +53,13 @@ public class WorldGenerator : MonoBehaviour
 		foreach (Civilization civ in GameManager.Instance.Civilizations)
 		{
 			const int CLAIM_AREA = 2;
-			List<HexCoords> territory = civ.GetCapitalTile().GetSpiral(CLAIM_AREA);
+			HexCoords[] territory = civ.GetCapitalTile().GetSpiral(CLAIM_AREA);
 			foreach (HexCoords hexCoords in territory)
 			{
 				// Make sure the candidate tile isn't already in another civilization's territory.
 				var validTile = true;
-				foreach (Civilization other in GameManager.Instance.Civilizations)
+				foreach (Civilization other in GameManager.Instance.Civilizations
+														  .Where(other => other != civ))
 				{
 					if (other.Territory.Any(tile => tile == hexCoords))
 						validTile = false;
@@ -194,8 +195,6 @@ public class WorldGenerator : MonoBehaviour
 
 				// Place the capital.
 				candidateHex.Building = _CastleTile;
-				GameManager.Instance.SetPlayerCapital(candidateHex.Coordinates);
-
 				civ.AddHexTile(candidateHex.Coordinates);
 				_DetailsTilemap.SetTile(candidateHex.Coordinates.Offset,
 										candidateHex.Building);
@@ -318,7 +317,7 @@ public class WorldGenerator : MonoBehaviour
 								  .FirstOrDefault(hex => hex != null && hex.Building);
 			if (otherCapital == null) continue;
 
-			List<HexCoords> territory = otherCapital.GetSpiral(2);
+			HexCoords[] territory = otherCapital.GetSpiral(2);
 			foreach (HexCoords hexCoords in territory)
 			{
 				// Make sure the candidate tile isn't already in another civilization's territory.

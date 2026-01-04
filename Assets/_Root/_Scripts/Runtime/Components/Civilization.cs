@@ -14,6 +14,8 @@ namespace PixelCiv.Components
 [Serializable]
 public class Civilization
 {
+	public const int UNIT_SPAWN_RANGE = 1;
+
 	[ShowInInspector, ReadOnly,]
 	public bool IsPlayer { get; private set; }
 	[ShowInInspector, ReadOnly,]
