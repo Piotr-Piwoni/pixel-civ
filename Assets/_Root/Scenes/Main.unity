@@ -1270,7 +1270,7 @@ TilemapRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
@@ -1295,7 +1295,7 @@ Tilemap:
   m_TileColorArray: []
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.4509804}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
   m_TileAnchor: {x: 0, y: 0, z: 0}
@@ -1518,7 +1518,7 @@ PrefabInstance:
       objectReference: {fileID: 1375315772719079721, guid: cc452c6546490ed4baa26406fb2d025f, type: 3}
     - target: {fileID: 8853382275686802714, guid: 5cb9216582c3269438b9be9542dba5c5, type: 3}
       propertyPath: _NumberOfPlayers
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8853382275686802714, guid: 5cb9216582c3269438b9be9542dba5c5, type: 3}
       propertyPath: _UnitManagerPrefab

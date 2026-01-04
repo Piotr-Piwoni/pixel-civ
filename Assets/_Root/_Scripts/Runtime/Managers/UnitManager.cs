@@ -73,6 +73,12 @@ public class UnitManager : Singleton<UnitManager>
 		return unit;
 	}
 
+	public static Civilization GetUnitCivilization(Guid id)
+	{
+		return GameManager.Instance.Civilizations
+						  .FirstOrDefault(civ => civ.Units.Contains(id));
+	}
+
 	/// <summary>
 	///     Move a desired Unit towards a specified hex cell.
 	/// </summary>
@@ -148,6 +154,21 @@ public class UnitManager : Singleton<UnitManager>
 				Hex neighbourTile = GameManager.Instance.HexMap.Find(neighbour);
 				if (neighbourTile is not { Type: TileType.Grassland, })
 					continue;
+
+				// Prevent walking through tiles that have enemy units.
+				if (neighbourTile.UnitID != Guid.Empty)
+				{
+					var movingUint = Guid.Empty;
+					foreach (KeyValuePair<Guid, HexCoords> k in _MoveOrders
+									 .Where(k => k.Value == goal))
+						movingUint = k.Key;
+
+					Civilization otherCiv = GetUnitCivilization(neighbourTile.UnitID);
+					Civilization movingCiv = GetUnitCivilization(movingUint);
+
+					if (movingCiv != otherCiv) continue;
+				}
+
 
 				// Calculate the assumed movement cost from the current tile to it's neighbour.
 				// Skip neighbour if we already know its movement cost.

@@ -20,6 +20,10 @@
     border-left-width: 3px;
     transition-duration: 0.5s;
     transition-timing-function: ease-in-out-back;
+    margin-top: 15px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+    margin-left: 15px;
 }
 
 .button:hover {

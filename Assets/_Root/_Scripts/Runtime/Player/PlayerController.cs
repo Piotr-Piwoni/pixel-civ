@@ -102,7 +102,11 @@ public class PlayerController : MonoBehaviour
 		HexCoords mouseHexCoords =
 				Utils.GetMouseHexCoords(_Camera, GameManager.Instance.Grid);
 		Hex selectedHex = GameManager.Instance.HexMap.Find(mouseHexCoords);
-		if (selectedHex == null) return;
+		if (selectedHex == null || selectedHex.UnitID == Guid.Empty) return;
+
+		// Check to see if the unit belongs to the player's civilization.
+		if (!GameManager.Instance.GetPlayerCivilization().Units.Contains(selectedHex.UnitID))
+			return;
 
 		_SelectedUnit = selectedHex.UnitID;
 		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
