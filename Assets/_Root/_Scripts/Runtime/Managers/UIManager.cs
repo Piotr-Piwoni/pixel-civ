@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using PixelCiv.Components;
 using PixelCiv.Utilities;
 using PixelCiv.Utilities.Hex;
@@ -85,18 +84,16 @@ public class UIManager : Singleton<UIManager>
 		if (!UnitManager.Instance)
 			return;
 
-		HexCoords capitalCoords = GameManager.Instance.PlayerCapitalPosition;
-
-		const int SEARCH_RANGE = 3;
-		List<HexCoords> area = Hex.GetSpiral(capitalCoords, SEARCH_RANGE);
+		// Get the player civilization.
+		Civilization playerCiv = GameManager.Instance.GetPlayerCiv();
+		HexCoords[] area = playerCiv.GetCapitalTile()
+									.GetSpiral(Civilization.UNIT_SPAWN_RANGE);
+		Array.Reverse(area); //< Start from the edge of the spiral.
 		foreach (HexCoords hexCoords in area)
 		{
 			Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
 			if (hex is not { Type: TileType.Grassland, }) continue;
 
-			// Get the player civilization.
-			Civilization playerCiv = GameManager.Instance.Civilizations
-												.Find(n => n.IsPlayer);
 			Unit unit = UnitManager.Instance.CreateUnit(UnitType.Footman, hexCoords,
 														playerCiv.Colour);
 			// Exit on successful unit creation.

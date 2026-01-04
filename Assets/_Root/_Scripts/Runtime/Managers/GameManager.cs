@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using PixelCiv.Components;
 using PixelCiv.Systems;
 using PixelCiv.Utilities;
-using PixelCiv.Utilities.Hex;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,8 +18,6 @@ public class GameManager : PersistentSingleton<GameManager>
 	[ShowInInspector, ReadOnly,]
 	public GameState CurrentState { get; private set; } = GameState.Playing;
 	public Grid Grid => _Grid;
-	[ShowInInspector, ReadOnly,]
-	public HexCoords PlayerCapitalPosition { get; private set; }
 	[ShowInInspector, ReadOnly,]
 	public List<Civilization> Civilizations { get; private set; } = new();
 	public Transform ActorsGroup { get; private set; }
@@ -107,12 +104,12 @@ public class GameManager : PersistentSingleton<GameManager>
 		CurrentState = newState;
 	}
 
-	public override void OnSceneChange(Scene scene, LoadSceneMode mode) { }
-
-	public void SetPlayerCapital(HexCoords position)
+	public Civilization GetPlayerCiv()
 	{
-		PlayerCapitalPosition = position;
+		return Civilizations.Find(n => n.IsPlayer);
 	}
+
+	public override void OnSceneChange(Scene scene, LoadSceneMode mode) { }
 
 	private void GetGroups()
 	{
