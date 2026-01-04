@@ -4,7 +4,7 @@ public enum CivilizationType
 {
 	Random = 0,
 	Rumos,
-	Velos,
+	Veltran,
 	Aruna,
 }
 }

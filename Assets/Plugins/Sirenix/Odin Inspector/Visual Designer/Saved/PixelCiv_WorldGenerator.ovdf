@@ -7,6 +7,11 @@ Position: $root:0
 + [Sirenix.OdinInspector.FoldoutGroupAttribute]
 	GroupName = "References"
 
+# $2HoYepK4Vx5186K712yVN5
+Position: $root:7
++ [Sirenix.OdinInspector.FoldoutGroupAttribute]
+	GroupName = "Editor Only"
+
 # _SpawnerPrefab
 Position: $C1FKqwJ6Yqxn5qaNXSYWsb:5
 + [Sirenix.OdinInspector.RequiredAttribute]
@@ -36,3 +41,24 @@ Position: $C1FKqwJ6Yqxn5qaNXSYWsb:0
 	IncludeChildren = True
 + [Sirenix.OdinInspector.InlineEditorAttribute]
 	ObjectFieldMode = Foldout
+
+# _Civilizations
+Position: $2HoYepK4Vx5186K712yVN5:1
+
+# _CivNumber
+Position: $2HoYepK4Vx5186K712yVN5:0
++ [Sirenix.OdinInspector.MinValueAttribute]
+	MinValue = 1
+
+# Clear()
+Position: $root:8
+
+# GenerateWorld()
+Position: $root:9
+
+# _WorldSize
++ [UnityEngine.SpaceAttribute]
+	height = 7
+
+# _TerritoriesTilemap
+Position: $C1FKqwJ6Yqxn5qaNXSYWsb:3
