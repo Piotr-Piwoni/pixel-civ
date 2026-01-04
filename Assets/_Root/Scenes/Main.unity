@@ -1518,7 +1518,7 @@ PrefabInstance:
       objectReference: {fileID: 1375315772719079721, guid: cc452c6546490ed4baa26406fb2d025f, type: 3}
     - target: {fileID: 8853382275686802714, guid: 5cb9216582c3269438b9be9542dba5c5, type: 3}
       propertyPath: _NumberOfPlayers
-      value: 1
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8853382275686802714, guid: 5cb9216582c3269438b9be9542dba5c5, type: 3}
       propertyPath: _UnitManagerPrefab

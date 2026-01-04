@@ -50,6 +50,7 @@ Position: $MaEHNeQskjZ2paUPjnFWq3:4
 
 # _NumberOfPlayers
 Position: $JBufoagBsEHi5SaJtK5Y6T:3
++ [Sirenix.OdinInspector.DisableInPlayModeAttribute]
 
 # _Grid
 Position: $JBufoagBsEHi5SaJtK5Y6T:2

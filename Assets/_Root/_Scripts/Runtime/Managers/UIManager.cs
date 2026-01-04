@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using PixelCiv.Components;
 using PixelCiv.Utilities;
 using PixelCiv.Utilities.Hex;
@@ -46,8 +47,16 @@ public class UIManager : Singleton<UIManager>
 	{
 		_TerritoriesTilemap.enabled = _TerritoryViewToggle;
 
-		var spawnUnitsButton = _Document.rootVisualElement.Q<Button>("SpawnUnitsButton");
+		var spawnButtonGroup = _Document.rootVisualElement
+										.Q<VisualElement>("SpawnButtonGroup");
+
+		var spawnPlayerUnitsButton = spawnButtonGroup
+				.Q<Button>("SpawnPlayerUnitsButton");
+		spawnPlayerUnitsButton.clicked += SpawnPlayerUnitsButtonOnClicked;
+
+		var spawnUnitsButton = spawnButtonGroup.Q<Button>("SpawnUnitsButton");
 		spawnUnitsButton.clicked += SpawnUnitsButtonOnClicked;
+
 		var territoryViewButton =
 				_Document.rootVisualElement.Q<Button>("ToggleTerritoryButton");
 		territoryViewButton.clicked += TerritoryViewButtonOnClicked;
@@ -79,7 +88,7 @@ public class UIManager : Singleton<UIManager>
 		}
 	}
 
-	private void SpawnUnitsButtonOnClicked()
+	private void SpawnPlayerUnitsButtonOnClicked()
 	{
 		if (!UnitManager.Instance)
 			return;
@@ -91,6 +100,9 @@ public class UIManager : Singleton<UIManager>
 		Array.Reverse(area); //< Start from the edge of the spiral.
 		foreach (HexCoords hexCoords in area)
 		{
+			// Check if the provided tile belong in the civilization's territory.
+			if (!playerCiv.Territory.Contains(hexCoords)) continue;
+
 			Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
 			if (hex is not { Type: TileType.Grassland, }) continue;
 
@@ -101,6 +113,39 @@ public class UIManager : Singleton<UIManager>
 			hex.UnitID = unit.ID;
 			playerCiv.AddUnit(unit.ID);
 			return;
+		}
+	}
+
+	private void SpawnUnitsButtonOnClicked()
+	{
+		if (!UnitManager.Instance)
+			return;
+
+		foreach (Civilization civ in GameManager.Instance.Civilizations)
+		{
+			// Skip over the player civilization.
+			if (civ == GameManager.Instance.GetPlayerCiv()) continue;
+
+
+			HexCoords[] area = civ.GetCapitalTile()
+								  .GetSpiral(Civilization.UNIT_SPAWN_RANGE);
+			Array.Reverse(area); //< Start from the edge of the spiral.
+			foreach (HexCoords hexCoords in area)
+			{
+				// Check if the provided tile belong in the civilization's territory.
+				if (!civ.Territory.Contains(hexCoords)) continue;
+
+				Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
+				if (hex is not { Type: TileType.Grassland, }) continue;
+
+				Unit unit = UnitManager.Instance.CreateUnit(UnitType.Footman, hexCoords,
+					civ.Colour);
+				// Exit on successful unit creation.
+				if (!unit) continue;
+				hex.UnitID = unit.ID;
+				civ.AddUnit(unit.ID);
+				break;
+			}
 		}
 	}
 
