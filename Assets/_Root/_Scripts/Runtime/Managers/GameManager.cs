@@ -104,7 +104,7 @@ public class GameManager : PersistentSingleton<GameManager>
 		CurrentState = newState;
 	}
 
-	public Civilization GetPlayerCiv()
+	public Civilization GetPlayerCivilization()
 	{
 		return Civilizations.Find(n => n.IsPlayer);
 	}

@@ -94,7 +94,7 @@ public class UIManager : Singleton<UIManager>
 			return;
 
 		// Get the player civilization.
-		Civilization playerCiv = GameManager.Instance.GetPlayerCiv();
+		Civilization playerCiv = GameManager.Instance.GetPlayerCivilization();
 		HexCoords[] area = playerCiv.GetCapitalTile()
 									.GetSpiral(Civilization.UNIT_SPAWN_RANGE);
 		Array.Reverse(area); //< Start from the edge of the spiral.
@@ -124,7 +124,7 @@ public class UIManager : Singleton<UIManager>
 		foreach (Civilization civ in GameManager.Instance.Civilizations)
 		{
 			// Skip over the player civilization.
-			if (civ == GameManager.Instance.GetPlayerCiv()) continue;
+			if (civ == GameManager.Instance.GetPlayerCivilization()) continue;
 
 
 			HexCoords[] area = civ.GetCapitalTile()
