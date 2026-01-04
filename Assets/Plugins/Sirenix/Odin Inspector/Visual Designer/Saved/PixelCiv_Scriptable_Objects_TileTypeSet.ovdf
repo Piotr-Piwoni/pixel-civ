@@ -1,0 +1,12 @@
+OVDF v1.1
+PixelCiv.Scriptable_Objects.TileTypeSet, Project
+MetaGuid:d3790e3d6eaa43ce99ee47721cdbecdf
+
+# _TileBase
+Position: $root:2
++ [Sirenix.OdinInspector.RequiredAttribute]
+
+# _Base
+Position: $root:2
++ [Sirenix.OdinInspector.RequiredAttribute]
++ [Sirenix.OdinInspector.HideInInlineEditorsAttribute]

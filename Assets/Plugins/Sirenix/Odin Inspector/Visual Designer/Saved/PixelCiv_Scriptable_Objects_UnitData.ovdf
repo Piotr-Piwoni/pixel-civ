@@ -1,0 +1,16 @@
+OVDF v1.1
+PixelCiv.Scriptable_Objects.UnitData, Project
+MetaGuid:5880216169ef45daacc6665300d577bc
+
+# _Type
+Position: $root:0
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 73
+
+# _Stats
++ [Sirenix.OdinInspector.InlinePropertyAttribute]
+	LabelWidth = 82
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 72
++ [UnityEngine.SpaceAttribute]
+	height = 13

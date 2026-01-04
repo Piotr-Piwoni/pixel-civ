@@ -1,0 +1,67 @@
+OVDF v1.1
+PixelCiv.Managers.GameManager, Project
+MetaGuid:43a74e58b56948bdacff61bec5d8b7c5
+
+# $v6trgZ15hxQAYsf23DERX
+Position: $root:42
++ [Sirenix.OdinInspector.TabGroupAttribute]
+	GroupName = "Main"
+	HideWhenChildrenAreInvisible = True
+	TabLayouting = Shrink
+
+# $MaEHNeQskjZ2paUPjnFWq3
+Position: $v6trgZ15hxQAYsf23DERX:0
++ [Sirenix.OdinInspector.TabGroupAttribute+TabSubGroupAttribute]
+	GroupName = "Info"
+	Icon = InfoSquareFill
+	TextColor = "lightblue"
+
+# $JBufoagBsEHi5SaJtK5Y6T
+Position: $v6trgZ15hxQAYsf23DERX:1
++ [Sirenix.OdinInspector.TabGroupAttribute+TabSubGroupAttribute]
+	GroupName = "Settings"
+	Icon = GearFill
+	TextColor = "yellow"
+
+# $3A36nPSfZJFVtfAsKMUWXz
+Position: $JBufoagBsEHi5SaJtK5Y6T:0
++ [Sirenix.OdinInspector.FoldoutGroupAttribute]
+	GroupName = "Prefabs"
+
+# Camera
+Position: $MaEHNeQskjZ2paUPjnFWq3:2
+
+# Player
+Position: $MaEHNeQskjZ2paUPjnFWq3:1
+
+# CurrentState
+Position: $MaEHNeQskjZ2paUPjnFWq3:0
+
+# PlayerCapitalPosition
+Position: $MaEHNeQskjZ2paUPjnFWq3:3
+
+# _PlayerPrefab
+Position: $3A36nPSfZJFVtfAsKMUWXz:0
++ [Sirenix.OdinInspector.RequiredAttribute]
++ [Sirenix.OdinInspector.AssetsOnlyAttribute]
+
+# _Civilizations
+Position: $MaEHNeQskjZ2paUPjnFWq3:4
+
+# _NumberOfPlayers
+Position: $JBufoagBsEHi5SaJtK5Y6T:3
+
+# _Grid
+Position: $JBufoagBsEHi5SaJtK5Y6T:2
++ [Sirenix.OdinInspector.SceneObjectsOnlyAttribute]
++ [Sirenix.OdinInspector.RequiredAttribute]
+	MessageType = Warning
+
+# _UnitManagerPrefab
+Position: $3A36nPSfZJFVtfAsKMUWXz:1
++ [Sirenix.OdinInspector.RequiredAttribute]
++ [Sirenix.OdinInspector.AssetsOnlyAttribute]
+
+# _MusicClip
+Position: $JBufoagBsEHi5SaJtK5Y6T:1
++ [Sirenix.OdinInspector.AssetsOnlyAttribute]

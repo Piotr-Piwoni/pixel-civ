@@ -16,4 +16,8 @@ MonoBehaviour:
   - Enabled: 1
     EnabledOverridden: 1
     Type: Sirenix.OdinValidator.Editor.Validators.MustBeAPrefabValidator, Sirenix.OdinValidator.Editor
-    Override: 
+    Override: "{\r\n    \"$id\": 0,\r\n    \"$type\": \"0|Sirenix.OdinValidator.Editor.Validators.MustBeAPrefabValidator,
+      Sirenix.OdinValidator.Editor\",\r\n    \"ComponentTypes\": {\r\n        \"$id\":
+      1,\r\n        \"$type\": \"1|System.Type[], mscorlib\",\r\n        \"$rlength\":
+      0,\r\n        \"$rcontent\": [\r\n        ]\r\n    },\r\n    \"MakePrefabAssetLocation\":
+      \"Assets/\"\r\n}"

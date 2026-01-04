@@ -1,0 +1,56 @@
+OVDF v1.1
+PixelCiv.Scriptable_Objects.UnitStats, Project
+MetaGuid:5880216169ef45daacc6665300d577bc
+
+# $tRtAxW2FGRxZw9phYHW9S
+Position: $root:13
++ [Sirenix.OdinInspector.TitleGroupAttribute]
+	Indent = False
+	GroupName = "Stats"
+	Alignment = Centered
+
+# _Type
+Position: $root:0
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 130
+
+# _Stats
++ [Sirenix.OdinInspector.InlinePropertyAttribute]
+	LabelWidth = 82
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 72
++ [UnityEngine.SpaceAttribute]
+	height = 13
+
+# _MoveSpeed
+Position: $tRtAxW2FGRxZw9phYHW9S:0
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 130
++ [Sirenix.OdinInspector.MinValueAttribute]
+	MinValue = 1
+
+# _TurnSpeed
+Position: $tRtAxW2FGRxZw9phYHW9S:1
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 130
++ [Sirenix.OdinInspector.MinValueAttribute]
+	MinValue = 1
+
+# _AttackPower
+Position: $tRtAxW2FGRxZw9phYHW9S:2
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 130
++ [Sirenix.OdinInspector.MinValueAttribute]
+
+# _Defence
+Position: $tRtAxW2FGRxZw9phYHW9S:3
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 130
++ [Sirenix.OdinInspector.MinValueAttribute]
+
+# _Range
+Position: $tRtAxW2FGRxZw9phYHW9S:4
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 130
++ [Sirenix.OdinInspector.MinValueAttribute]
+	MinValue = 1

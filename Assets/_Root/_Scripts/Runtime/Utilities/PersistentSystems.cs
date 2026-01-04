@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using PROJECTNAME.Interfaces;
+using PixelCiv.Interfaces;
 using UnityEngine.SceneManagement;
 
-namespace PROJECTNAME.Utilities
+namespace PixelCiv.Utilities
 {
 public class PersistentSystems : PersistentSingleton<PersistentSystems>
 {

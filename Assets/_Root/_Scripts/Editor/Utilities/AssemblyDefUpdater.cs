@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
-namespace PROJECTNAME.Editor.Utilities
+namespace PixelCiv.Editor.Utilities
 {
 public static class AssemblyDefUpdater
 {
@@ -16,14 +16,13 @@ public static class AssemblyDefUpdater
 	public static void UpdateAssemblyDefinitions()
 	{
 		// Remove whitespaces from product name.
-		string productName = PlayerSettings.productName.Replace(" ",
-				string.Empty);
+		string productName = PlayerSettings.productName.Replace(" ", string.Empty);
 
 		const string ROOT_FOLDER_PATH = "Assets/_Root";
 		// Construct a path to the product name history file.
 		string historyPath = Path.Combine(Application.dataPath,
-										"_Root/_Scripts/Editor",
-										_HISTORY_FILE_NAME);
+										  "_Root/_Scripts/Editor",
+										  _HISTORY_FILE_NAME);
 
 		if (!Directory.Exists(ROOT_FOLDER_PATH))
 		{
@@ -33,13 +32,12 @@ public static class AssemblyDefUpdater
 
 		// List of filtered assembly definitions.
 		string[] asmdefFiles = Directory.GetFiles(ROOT_FOLDER_PATH, "*.asmdef",
-												SearchOption.AllDirectories);
-		asmdefFiles =
-			Array.FindAll(asmdefFiles, file => !ShouldIgnorePath(file));
+												  SearchOption.AllDirectories);
+		asmdefFiles = Array.FindAll(asmdefFiles, file => !ShouldIgnorePath(file));
 
 		// Load an old name if "LastProductName.txt" exits,
 		// if not, infer the namespace.
-		string oldName;
+		var oldName = string.Empty;
 		if (File.Exists(historyPath))
 			oldName = File.ReadAllText(historyPath).Trim();
 		else
@@ -59,9 +57,8 @@ public static class AssemblyDefUpdater
 
 		// List of filtered scripts.
 		string[] scriptFiles = Directory.GetFiles(ROOT_FOLDER_PATH, "*.cs",
-												SearchOption.AllDirectories);
-		scriptFiles = Array.FindAll(scriptFiles,
-									file => !ShouldIgnorePath(file));
+												  SearchOption.AllDirectories);
+		scriptFiles = Array.FindAll(scriptFiles, file => !ShouldIgnorePath(file));
 
 		var changedAsmDefs = new ConcurrentBag<string>();
 		var changedScripts = new ConcurrentBag<string>();
@@ -79,32 +76,24 @@ public static class AssemblyDefUpdater
 			for (var i = 0; i < lines.Length; i++)
 			{
 				string trimmed = lines[i].TrimStart();
-				if (!trimmed.StartsWith("\"rootNamespace\""))
-					continue;
+				if (!trimmed.StartsWith("\"rootNamespace\"")) continue;
 
 				// Find the "rootNamespace" field.
 				Match match = Regex.Match(lines[i],
-										@"(""rootNamespace""\s*:\s*"")(.*?)(\"")");
-
-				if (!match.Success)
-					continue;
+										  @"(""rootNamespace""\s*:\s*"")(.*?)(\"")");
+				if (!match.Success) continue;
 
 				// Once found check its values and update it.
 				string currentNamespace = match.Groups[2].Value;
-				if (!currentNamespace.Contains(oldName))
-					continue;
+				if (!currentNamespace.Contains(oldName)) continue;
 
-				string newNamespace = currentNamespace.Replace(oldName,
-						productName);
-				lines[i] = match.Groups[1].Value +
-							newNamespace +
-							match.Groups[3].Value + ",";
+				string newNamespace = currentNamespace.Replace(oldName, productName);
+				lines[i] = match.Groups[1].Value + newNamespace +
+						   match.Groups[3].Value + ",";
 				changed = true;
 			}
 
-			if (!changed)
-				return;
-
+			if (!changed) return;
 			File.WriteAllLines(file, lines);
 			changedAsmDefs.Add(file);
 		});
@@ -134,8 +123,7 @@ public static class AssemblyDefUpdater
 			});
 
 			// Replace in namespace declarations.
-			Match namespaceMatch = Regex.Match(content,
-												@"namespace\s+([\w\.]+)");
+			Match namespaceMatch = Regex.Match(content, @"namespace\s+([\w\.]+)");
 			if (namespaceMatch.Success)
 			{
 				string Value = namespaceMatch.Groups[1].Value;
@@ -147,15 +135,13 @@ public static class AssemblyDefUpdater
 				}
 			}
 
-			if (!changed || content == originalContent)
-				return;
+			if (!changed || content == originalContent) return;
 			File.WriteAllText(file, content);
 			changedScripts.Add(file);
 		});
 
 		// Store the new product name.
-		Directory.CreateDirectory(Path.GetDirectoryName(historyPath) ??
-								string.Empty);
+		Directory.CreateDirectory(Path.GetDirectoryName(historyPath) ?? string.Empty);
 		File.WriteAllText(historyPath, productName);
 
 		// Log updates.
@@ -181,11 +167,8 @@ public static class AssemblyDefUpdater
 		foreach (string file in asmdefFiles)
 		{
 			string text = File.ReadAllText(file);
-			Match match = Regex.Match(text,
-									@"""rootNamespace""\s*:\s*""([\w\.]+)""");
-
-			if (!match.Success)
-				continue;
+			Match match = Regex.Match(text, @"""rootNamespace""\s*:\s*""([\w\.]+)""");
+			if (!match.Success) continue;
 
 			// Assume first segment is the product name.
 			return match.Groups[1].Value.Split('.')[0];

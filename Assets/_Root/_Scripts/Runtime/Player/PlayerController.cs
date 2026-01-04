@@ -1,60 +1,51 @@
 using System;
-using PROJECTNAME.Managers;
-using Unity.Cinemachine;
+using PixelCiv.Managers;
+using PixelCiv.Utilities;
+using PixelCiv.Utilities.Hex;
+using Sirenix.OdinInspector;
 using UnityEngine;
-using DeviceType = PROJECTNAME.Managers.DeviceType;
+using UnityEngine.InputSystem;
+using DeviceType = PixelCiv.Utilities.Types.DeviceType;
 
-namespace Demos
+namespace PixelCiv
 {
+[HideMonoScript]
 public class PlayerController : MonoBehaviour
 {
-	[Header("Movement Settings"), SerializeField,
-	 Tooltip("Speed of the player movement")]
+	[SerializeField, Header("Movement Settings"),
+	 Tooltip("Speed of the player movement"),]
 	private float _MoveSpeed = 5f;
+	[SerializeField, Tooltip("Speed multiplier applied when the player is sprinting."),]
+	private float _SprintMult = 1.5f;
 
-	private CinemachineCamera _Camera;
-	private float _CameraPitch;
-	private float _CameraYaw;
-	private float _LookSensitivity = 0.35f;
-	private Transform _CameraTransform;
+	private Camera _Camera;
+	[ShowInInspector, ReadOnly,]
+	private Guid _SelectedUnit;
 
 
 	private void Awake()
 	{
-		// Grab Cinemachine camera from children.
-		_Camera = GetComponentInChildren<CinemachineCamera>();
-		if (_Camera)
-			_CameraTransform = _Camera.transform;
-		else
-			Debug.LogError("No Cinemachine Camera found as a child!");
+		InputManager.Instance.SetPlayerInput(GetComponent<PlayerInput>());
+		_Camera = Camera.main;
 	}
 
 	private void Update()
 	{
 		Vector2 moveInput = InputManager.Instance.MoveInput;
 		MoveCharacter(moveInput);
-
-		Vector2 lookInput = InputManager.Instance.LookInput;
-		LookAround(lookInput);
+		MoveUnit();
 	}
 
 	private void OnEnable()
 	{
-		InputManager.Instance.OnMovePressed += HandleMovement;
-		InputManager.Instance.OnJumpPressed += HandleJump;
-		InputManager.Instance.OnAttackPressed += HandleAttack;
-		InputManager.Instance.OnInteractionPressed += HandleInteraction;
+		InputManager.Instance.OnInteractionPressed += OnSelect;
 		InputManager.Instance.OnDeviceChanged += HandleDeviceChanged;
 	}
 
 	private void OnDisable()
 	{
 		if (!InputManager.Instance) return;
-
-		InputManager.Instance.OnMovePressed -= HandleMovement;
-		InputManager.Instance.OnJumpPressed -= HandleJump;
-		InputManager.Instance.OnAttackPressed -= HandleAttack;
-		InputManager.Instance.OnInteractionPressed -= HandleInteraction;
+		InputManager.Instance.OnInteractionPressed -= OnSelect;
 		InputManager.Instance.OnDeviceChanged -= HandleDeviceChanged;
 	}
 
@@ -63,71 +54,63 @@ public class PlayerController : MonoBehaviour
 		_MoveSpeed = newSpeed;
 	}
 
-	private void HandleAttack()
-	{
-		Debug.Log("Attack Pressed!");
-	}
-
 	private void HandleDeviceChanged(DeviceType deviceType)
 	{
 		switch (deviceType)
 		{
-			case DeviceType.KeyboardMouse:
-				_LookSensitivity = 0.35f;
-				break;
-			case DeviceType.Gamepad:
-				_LookSensitivity = 1f;
-				break;
-			case DeviceType.Unknown:
-				throw new ArgumentOutOfRangeException(nameof(deviceType),
-					deviceType, null);
+		case DeviceType.KeyboardMouse:
+			break;
+		case DeviceType.Gamepad:
+			break;
+		case DeviceType.Unknown:
+			throw new ArgumentOutOfRangeException(nameof(deviceType), deviceType, null);
 		}
-	}
-
-	private void HandleInteraction()
-	{
-		Debug.Log("Interaction Pressed!");
-	}
-
-	private void HandleJump()
-	{
-		Debug.Log("Jump Pressed!");
-	}
-
-	private void HandleMovement()
-	{
-		Debug.Log("Movement Input Detected!");
-	}
-
-	private void LookAround(Vector2 look)
-	{
-		if (!_CameraTransform) return;
-
-		_CameraYaw += look.x * _LookSensitivity;
-		_CameraPitch -= look.y * _LookSensitivity;
-		// Limit pitch to avoid flipping.
-		_CameraPitch = Mathf.Clamp(_CameraPitch, -80f, 80f);
-
-		_CameraTransform.rotation =
-			Quaternion.Euler(_CameraPitch, _CameraYaw, 0f);
 	}
 
 	private void MoveCharacter(Vector2 move)
 	{
-		if (!_CameraTransform) return;
+		if (!_Camera)
+			return;
 
-		// Get camera forward and right.
-		Vector3 forward = _CameraTransform.forward;
-		forward.y = 0;
-		forward.Normalize();
+		float speed = _MoveSpeed;
+		if (InputManager.Instance.IsSprinting)
+			speed *= _SprintMult;
 
-		Vector3 right = _CameraTransform.right;
-		right.y = 0;
-		right.Normalize();
-
-		Vector3 movement = (forward * move.y + right * move.x) *
-		                   (_MoveSpeed * Time.deltaTime);
+		Vector3 movement = move * (speed * Time.deltaTime);
 		transform.Translate(movement, Space.World);
+	}
+
+	private void MoveUnit()
+	{
+		if (_SelectedUnit == Guid.Empty || !Mouse.current.rightButton.wasPressedThisFrame)
+			return;
+
+		HexCoords mouseHexCoords =
+				Utils.GetMouseHexCoords(_Camera, GameManager.Instance.Grid);
+		Hex targetHex = GameManager.Instance.HexMap.Find(mouseHexCoords);
+		if (targetHex == null) return;
+
+		UnitManager.Instance.Move(_SelectedUnit, targetHex.Coordinates);
+		_SelectedUnit = Guid.Empty;
+		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
+	}
+
+	private void OnSelect()
+	{
+		if (!GameManager.Instance) return;
+
+		HexCoords mouseHexCoords =
+				Utils.GetMouseHexCoords(_Camera, GameManager.Instance.Grid);
+		Hex selectedHex = GameManager.Instance.HexMap.Find(mouseHexCoords);
+		if (selectedHex == null) return;
+
+		_SelectedUnit = selectedHex.UnitID;
+		Debug.Log($"{nameof(_SelectedUnit)} set to: {_SelectedUnit}");
+		Debug.Log("--- Hex ---\n" +
+				  $"Cell Coord: {selectedHex.Coordinates.Offset}\n" +
+				  $"Axial Coord: {selectedHex.Coordinates.Axial}\n" +
+				  $"Unit ID: {selectedHex.UnitID}\n" +
+				  $"Building: {selectedHex.Building}");
 	}
 }
 }

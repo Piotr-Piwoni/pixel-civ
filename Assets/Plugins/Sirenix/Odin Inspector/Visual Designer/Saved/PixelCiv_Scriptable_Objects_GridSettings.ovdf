@@ -1,0 +1,21 @@
+OVDF v1.1
+PixelCiv.Scriptable_Objects.GridSettings, Project
+MetaGuid:e3b14b4c899f415e84eeb485b05a41fe
+
+# CellSize
++ [Sirenix.OdinInspector.MinValueAttribute]
+
+# CellGap
++ [Sirenix.OdinInspector.MinValueAttribute]
++ [UnityEngine.SpaceAttribute]
+	height = 7
+
+# CellLayout
++ [Sirenix.OdinInspector.EnumToggleButtonsAttribute]
++ [UnityEngine.SpaceAttribute]
+	height = 7
+
+# CellSwizzle
++ [Sirenix.OdinInspector.EnumToggleButtonsAttribute]
++ [UnityEngine.SpaceAttribute]
+	height = 7

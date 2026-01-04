@@ -1,0 +1,6 @@
+OVDF v1.1
+PixelCiv.UnitStats, Project
+
+# _Range
++ [Sirenix.OdinInspector.MinValueAttribute]
+	MinValue = 1

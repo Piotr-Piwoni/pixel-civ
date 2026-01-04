@@ -1,4 +1,4 @@
-using PROJECTNAME.Interfaces;
+using PixelCiv.Interfaces;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 // - Unity Architecture for Noobs - Game Structure
 // URL: https://www.youtube.com/watch?v=tE1qH8OxO2Y
 
-namespace PROJECTNAME.Utilities
+namespace PixelCiv.Utilities
 {
 /// <summary>
 ///     A static instance is similar to a singleton, but instead of destroying
