@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
 
-namespace PixelCiv
+namespace PixelCiv.Components
 {
 [ExecuteInEditMode, HideMonoScript,]
 public class Spawner : MonoBehaviour

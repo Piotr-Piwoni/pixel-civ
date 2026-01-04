@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using PixelCiv.Components;
 using PixelCiv.Scriptable_Objects;
 using PixelCiv.Utilities;
+using PixelCiv.Utilities.Hex;
+using PixelCiv.Utilities.Types;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
@@ -14,6 +17,7 @@ public class UnitManager : Singleton<UnitManager>
 {
 	[SerializeField]
 	private GameObject _UnitPrefab;
+	private readonly Dictionary<Guid, HexCoords> _MoveOrders = new();
 
 	private readonly List<Unit> _Units = new();
 	private List<UnitStats> _UnitTypesData = new();
@@ -81,14 +85,17 @@ public class UnitManager : Singleton<UnitManager>
 
 		// Validate target tile.
 		Hex targetHex = GameManager.Instance.HexMap.Find(targetCoords);
-		if (targetHex == null || targetHex.UnitID != Guid.Empty) return;
+		if (targetHex == null || targetHex.UnitID != Guid.Empty ||
+			_MoveOrders.ContainsValue(targetCoords))
+			return;
 
 		// Clear current hex occupancy.
 		Hex currentHex = GameManager.Instance.HexMap.Find(unit.Position);
 		if (currentHex != null)
 			currentHex.UnitID = Guid.Empty;
 
-		// Compute path.
+		// Start move order and compute path.
+		_MoveOrders[id] = targetCoords;
 		List<HexCoords> path = FindPath(unit.Position, targetCoords);
 		unit.SetPath(path);
 		unit.OnMovementCompleted += CompleteMoveOrder;
@@ -102,6 +109,9 @@ public class UnitManager : Singleton<UnitManager>
 		Hex hex = GameManager.Instance.HexMap.Find(unit.Position);
 		if (hex != null)
 			hex.UnitID = unit.ID;
+
+		// Remove move order.
+		_MoveOrders.Remove(id);
 	}
 
 	/// <summary>

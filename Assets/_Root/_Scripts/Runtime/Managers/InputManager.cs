@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using PixelCiv.Utilities;
+using PixelCiv.Utilities.Types;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using DeviceType = PixelCiv.Utilities.Types.DeviceType;
 
 namespace PixelCiv.Managers
 {
@@ -218,18 +220,5 @@ public class InputManager : PersistentSingleton<InputManager>
 		Debug.Log($"Device Changed: <color=red>{CurrentDeviceType}</color>");
 		OnDeviceChanged?.Invoke(CurrentDeviceType);
 	}
-}
-
-public enum ActionMap
-{
-	Gameplay = 0,
-	UI = 1,
-}
-
-public enum DeviceType
-{
-	Unknown = -1,
-	KeyboardMouse = 0,
-	Gamepad = 1,
 }
 }

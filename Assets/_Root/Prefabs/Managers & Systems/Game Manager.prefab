@@ -46,4 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _PlayerPrefab: {fileID: 3698244087147513884, guid: dd1b93c1f5e4bfa4c8201de9cc78f0a3, type: 3}
   _MusicClip: {fileID: 0}
-  _UnitManagerPrefab: {fileID: 0}
+  _UnitManagerPrefab: {fileID: 8955295138570573587, guid: 2428f054d2478b04e8e7b880a8578b09, type: 3}
+  _Grid: {fileID: 0}
+  _NumberOfPlayers: 1
+  _Civilizations: []

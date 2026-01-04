@@ -1,38 +1,43 @@
+using System.Collections.Generic;
+using PixelCiv.Components;
 using PixelCiv.Systems;
 using PixelCiv.Utilities;
+using PixelCiv.Utilities.Hex;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace PixelCiv.Managers
 {
-[HideMonoScript]
+[HideMonoScript,]
 public class GameManager : PersistentSingleton<GameManager>
 {
-	[TabGroup("", "Info", SdfIconType.QuestionSquareFill, TextColor = "lightblue"),
-	 ShowInInspector, ReadOnly,]
+	[ShowInInspector, ReadOnly,]
 	public Camera Camera { get; private set; }
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
+	[ShowInInspector, ReadOnly,]
 	public GameObject Player { get; private set; }
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly, PropertyOrder(-1f),]
+	[ShowInInspector, ReadOnly,]
 	public GameState CurrentState { get; private set; } = GameState.Playing;
 	public Grid Grid => _Grid;
-	[TabGroup("", "Info"), ShowInInspector, ReadOnly,]
+	[ShowInInspector, ReadOnly,]
 	public HexCoords PlayerCapitalPosition { get; private set; }
 	public Transform ActorsGroup { get; private set; }
 	public Transform ManagersGroup { get; private set; }
 
 	public HexMap HexMap = new();
 
-	[SerializeField,
-	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
+	[SerializeField]
 	private GameObject _PlayerPrefab;
-	[SerializeField, TabGroup("", "Settings"),]
+	[SerializeField]
 	private AudioClip _MusicClip;
-	[SerializeField, TabGroup("", "Settings"),]
+	[SerializeField]
 	private GameObject _UnitManagerPrefab;
-	[SerializeField, TabGroup("", "Settings"),]
+	[SerializeField]
 	private Grid _Grid;
+	[SerializeField, Min(1),]
+	private int _NumberOfPlayers = 1;
+	[SerializeField, ReadOnly,]
+	private List<Civilization> _Civilizations = new();
 
 	private bool _DelayPlayerInit;
 	private GameState _PreviousState;
@@ -42,6 +47,15 @@ public class GameManager : PersistentSingleton<GameManager>
 	{
 		base.Awake();
 		_PreviousState = CurrentState;
+
+		// Init players.
+		for (var i = 0; i < _NumberOfPlayers; i++)
+		{
+			// Always make sure that at least one civilization is the players.
+			Civilization civ;
+			civ = i == 0 ? new Civilization(isPlayer: true) : new Civilization();
+			_Civilizations.Add(civ);
+		}
 
 		GetGroups();
 	}

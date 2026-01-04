@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using PixelCiv.Utilities.Types;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace PixelCiv.Scriptable_Objects
