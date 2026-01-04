@@ -51,10 +51,10 @@ Position: $2HoYepK4Vx5186K712yVN5:0
 	MinValue = 1
 
 # Clear()
-Position: $2HoYepK4Vx5186K712yVN5:2
+Position: $root:8
 
 # GenerateWorld()
-Position: $2HoYepK4Vx5186K712yVN5:3
+Position: $root:9
 
 # _WorldSize
 + [UnityEngine.SpaceAttribute]

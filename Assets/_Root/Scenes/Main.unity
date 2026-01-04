@@ -318,6 +318,10 @@ PrefabInstance:
       propertyPath: _StartingUI
       value: 
       objectReference: {fileID: 9197481963319205126, guid: 34fa26a53773590429b4bac4d56572d3, type: 3}
+    - target: {fileID: 9198883520861842570, guid: fc17360f64002fd44a0c957893336b6b, type: 3}
+      propertyPath: _TerritoriesTilemap
+      value: 
+      objectReference: {fileID: 1586216941}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -848,11 +852,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7351980698237955560, guid: cc452c6546490ed4baa26406fb2d025f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 32.3
+      value: 37.3
       objectReference: {fileID: 0}
     - target: {fileID: 7351980698237955560, guid: cc452c6546490ed4baa26406fb2d025f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 17.7
+      value: 19.7
       objectReference: {fileID: 0}
     - target: {fileID: 7351980698237955560, guid: cc452c6546490ed4baa26406fb2d025f, type: 3}
       propertyPath: m_LocalPosition.z

@@ -6,6 +6,7 @@ using PixelCiv.Utilities.Hex;
 using PixelCiv.Utilities.Types;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UIElements;
 using DeviceType = PixelCiv.Utilities.Types.DeviceType;
 
@@ -21,6 +22,10 @@ public class UIManager : Singleton<UIManager>
 	[SerializeField,
 	 TabGroup("", "Settings", SdfIconType.GearFill, TextColor = "yellow"),]
 	private VisualTreeAsset _StartingUI;
+	[SerializeField]
+	private TilemapRenderer _TerritoriesTilemap;
+
+	private bool _TerritoryViewToggle;
 
 
 	protected override void Awake()
@@ -42,6 +47,9 @@ public class UIManager : Singleton<UIManager>
 	{
 		var spawnUnitsButton = _Document.rootVisualElement.Q<Button>("SpawnUnitsButton");
 		spawnUnitsButton.clicked += SpawnUnitsButtonOnClicked;
+		var territoryViewButton =
+				_Document.rootVisualElement.Q<Button>("ToggleTerritoryButton");
+		territoryViewButton.clicked += TerritoryViewButtonOnClicked;
 	}
 
 	private void OnEnable()
@@ -91,6 +99,12 @@ public class UIManager : Singleton<UIManager>
 			hex.UnitID = unit.ID;
 			return;
 		}
+	}
+
+	private void TerritoryViewButtonOnClicked()
+	{
+		_TerritoryViewToggle = !_TerritoryViewToggle;
+		_TerritoriesTilemap.enabled = _TerritoryViewToggle;
 	}
 }
 }
