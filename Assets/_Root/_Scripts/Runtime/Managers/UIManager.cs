@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using PixelCiv.Components;
 using PixelCiv.Utilities;
 using PixelCiv.Utilities.Hex;
@@ -76,20 +77,20 @@ public class UIManager : Singleton<UIManager>
 
 		HexCoords capitalCoords = GameManager.Instance.PlayerCapitalPosition;
 
-		const int SEARCH_RANGE = 1;
-		for (var radius = 1; radius <= SEARCH_RANGE; radius++)
-			foreach (HexCoords hexCoords in Hex.GetRing(capitalCoords, radius))
-			{
-				Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
-				if (hex is not { Type: TileType.Grassland, }) continue;
+		const int SEARCH_RANGE = 3;
+		List<HexCoords> area = Hex.GetSpiral(capitalCoords, SEARCH_RANGE);
+		foreach (HexCoords hexCoords in area)
+		{
+			Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
+			if (hex is not { Type: TileType.Grassland, }) continue;
 
-				Unit unit = UnitManager.Instance.CreateUnit(
-						UnitType.Footman, hexCoords, Color.blue);
-				// Exit on successful unit creation.
-				if (!unit) continue;
-				hex.UnitID = unit.ID;
-				return;
-			}
+			Unit unit = UnitManager.Instance.CreateUnit(UnitType.Footman, hexCoords,
+														Color.blue);
+			// Exit on successful unit creation.
+			if (!unit) continue;
+			hex.UnitID = unit.ID;
+			return;
+		}
 	}
 }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PixelCiv.Utilities.Hex;
+using PixelCiv.Utilities.Types;
 using UnityEngine;
 
 namespace PixelCiv.Components

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PixelCiv.Utilities.Types;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -95,6 +96,30 @@ public class Hex
 		}
 
 		return results;
+	}
+
+	public List<HexCoords> GetSpiral(int radius)
+	{
+		List<HexCoords> spiral = new();
+		for (var i = 1; i <= radius; i++)
+		{
+			List<HexCoords> ring = GetRing(i);
+			spiral.AddRange(ring);
+		}
+
+		return spiral;
+	}
+
+	public static List<HexCoords> GetSpiral(HexCoords center, int radius)
+	{
+		List<HexCoords> spiral = new();
+		for (var i = 1; i <= radius; i++)
+		{
+			List<HexCoords> ring = GetRing(center, i);
+			spiral.AddRange(ring);
+		}
+
+		return spiral;
 	}
 }
 }
