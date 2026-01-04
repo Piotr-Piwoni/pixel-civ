@@ -988,12 +988,15 @@ MonoBehaviour:
   _WorldSize: {x: 20, y: 15}
   _GroundTilemap: {fileID: 1534370461}
   _DetailsTilemap: {fileID: 483896147}
+  _TerritoriesTilemap: {fileID: 1586216942}
   _CastleTile: {fileID: 11400000, guid: 7f44ee97f6f949440be3acdb971566de, type: 2}
   _NoiseScale: 0.25
   _SeaLevel: 0.4
   _MountainLevel: 0.7
   _SpawnerPrefab: {fileID: 1314214250009638414, guid: 539bbdae8f6cc884e8d733aa4b8b1b29, type: 3}
   _TileSet: {fileID: 11400000, guid: 0fa5ed0f3c3b3624e9f85392b345bf78, type: 2}
+  _CivNumber: 4
+  _Civilizations: []
 --- !u!114 &1376421176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1288,7 +1291,7 @@ Tilemap:
   m_TileColorArray: []
   m_TileObjectToInstantiateArray: []
   m_AnimationFrameRate: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.7019608}
   m_Origin: {x: 0, y: 0, z: 0}
   m_Size: {x: 0, y: 0, z: 1}
   m_TileAnchor: {x: 0, y: 0, z: 0}
@@ -1509,6 +1512,10 @@ PrefabInstance:
       propertyPath: _PlayerPrefab
       value: 
       objectReference: {fileID: 1375315772719079721, guid: cc452c6546490ed4baa26406fb2d025f, type: 3}
+    - target: {fileID: 8853382275686802714, guid: 5cb9216582c3269438b9be9542dba5c5, type: 3}
+      propertyPath: _NumberOfPlayers
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8853382275686802714, guid: 5cb9216582c3269438b9be9542dba5c5, type: 3}
       propertyPath: _UnitManagerPrefab
       value: 

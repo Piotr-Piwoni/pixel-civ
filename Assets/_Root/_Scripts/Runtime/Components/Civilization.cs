@@ -72,7 +72,13 @@ public class Civilization
 	public Hex GetCapitalTile()
 	{
 		return Territory.Select(hexCoords => GameManager.Instance.HexMap.Find(hexCoords))
-						.FirstOrDefault(hex => hex.Building);
+						.FirstOrDefault(hex => hex != null && hex.Building != null);
+	}
+
+	public void Reset()
+	{
+		Units.Clear();
+		Territory.Clear();
 	}
 }
 }

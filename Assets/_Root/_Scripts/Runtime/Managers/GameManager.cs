@@ -21,6 +21,8 @@ public class GameManager : PersistentSingleton<GameManager>
 	public Grid Grid => _Grid;
 	[ShowInInspector, ReadOnly,]
 	public HexCoords PlayerCapitalPosition { get; private set; }
+	[ShowInInspector, ReadOnly,]
+	public List<Civilization> Civilizations { get; private set; } = new();
 	public Transform ActorsGroup { get; private set; }
 	public Transform ManagersGroup { get; private set; }
 
@@ -36,12 +38,11 @@ public class GameManager : PersistentSingleton<GameManager>
 	private Grid _Grid;
 	[SerializeField, Min(1),]
 	private int _NumberOfPlayers = 1;
-	[SerializeField, ReadOnly,]
-	private List<Civilization> _Civilizations = new();
 
 	private bool _DelayPlayerInit;
 	private GameState _PreviousState;
 	private Spawner _PlayerSpawner;
+
 
 	protected override void Awake()
 	{
@@ -54,7 +55,7 @@ public class GameManager : PersistentSingleton<GameManager>
 			// Always make sure that at least one civilization is the players.
 			Civilization civ;
 			civ = i == 0 ? new Civilization(isPlayer: true) : new Civilization();
-			_Civilizations.Add(civ);
+			Civilizations.Add(civ);
 		}
 
 		GetGroups();
