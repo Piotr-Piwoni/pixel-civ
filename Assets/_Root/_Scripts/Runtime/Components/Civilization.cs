@@ -22,6 +22,8 @@ public class Civilization
 	public CivilizationType Type { get; private set; }
 	[ShowInInspector, ReadOnly,]
 	public Color Colour { get; private set; } = Color.white;
+	[ShowInInspector, DisplayAsString(TextAlignment.Center),]
+	public Guid ID { get; private set; } = Guid.NewGuid();
 	[ShowInInspector, ReadOnly,]
 	public List<Guid> Units { get; } = new();
 	[ShowInInspector, ReadOnly,]
