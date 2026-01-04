@@ -45,6 +45,8 @@ public class UIManager : Singleton<UIManager>
 
 	private void Start()
 	{
+		_TerritoriesTilemap.enabled = _TerritoryViewToggle;
+
 		var spawnUnitsButton = _Document.rootVisualElement.Q<Button>("SpawnUnitsButton");
 		spawnUnitsButton.clicked += SpawnUnitsButtonOnClicked;
 		var territoryViewButton =
@@ -92,11 +94,15 @@ public class UIManager : Singleton<UIManager>
 			Hex hex = GameManager.Instance.HexMap.Find(hexCoords);
 			if (hex is not { Type: TileType.Grassland, }) continue;
 
+			// Get the player civilization.
+			Civilization playerCiv = GameManager.Instance.Civilizations
+												.Find(n => n.IsPlayer);
 			Unit unit = UnitManager.Instance.CreateUnit(UnitType.Footman, hexCoords,
-														Color.blue);
+														playerCiv.Colour);
 			// Exit on successful unit creation.
 			if (!unit) continue;
 			hex.UnitID = unit.ID;
+			playerCiv.AddUnit(unit.ID);
 			return;
 		}
 	}

@@ -54,11 +54,13 @@ public class WorldGenerator : MonoBehaviour
 		{
 			const int CLAIM_AREA = 2;
 			List<HexCoords> territory = civ.GetCapitalTile().GetSpiral(CLAIM_AREA);
+			territory.Add(civ.GetCapitalTile().Coordinates); //< Add spiral center.
 			foreach (HexCoords hexCoords in territory)
 			{
 				// Make sure the candidate tile isn't already in another civilization's territory.
 				var validTile = true;
-				foreach (Civilization other in GameManager.Instance.Civilizations)
+				foreach (Civilization other in GameManager.Instance.Civilizations
+														  .Where(other => other != civ))
 				{
 					if (other.Territory.Any(tile => tile == hexCoords))
 						validTile = false;
