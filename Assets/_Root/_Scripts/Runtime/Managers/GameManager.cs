@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using PixelCiv.Components;
 using PixelCiv.Systems;
 using PixelCiv.Utilities;
@@ -45,6 +47,9 @@ public class GameManager : PersistentSingleton<GameManager>
 	{
 		base.Awake();
 		_PreviousState = CurrentState;
+
+		// Reserve space.
+		Civilizations.Capacity = 10;
 
 		// Init players.
 		for (var i = 0; i < _NumberOfPlayers; i++)
@@ -107,6 +112,11 @@ public class GameManager : PersistentSingleton<GameManager>
 	public Civilization GetPlayerCivilization()
 	{
 		return Civilizations.Find(n => n.IsPlayer);
+	}
+
+	public static Civilization GetUnitCivilization(Guid id)
+	{
+		return Instance.Civilizations.FirstOrDefault(civ => civ.Units.Contains(id));
 	}
 
 	public override void OnSceneChange(Scene scene, LoadSceneMode mode) { }

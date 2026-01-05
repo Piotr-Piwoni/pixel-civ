@@ -27,11 +27,14 @@ public class UnitManager : Singleton<UnitManager>
 	protected override void Awake()
 	{
 		base.Awake();
+		// Reserve space.
+		_Units.Capacity = 100;
+		_UnitTypesData.Capacity = 15;
 
 		_UnitTypesData = Resources.LoadAll<UnitStats>("Game/Units").ToList();
 
+		// Create a default UnitStats asset at runtime.
 		if (_UnitTypesData.IsNullOrEmpty())
-				// Create a default UnitStats asset at runtime.
 			_DefaultStats = ScriptableObject.CreateInstance<UnitStats>();
 	}
 
@@ -68,15 +71,8 @@ public class UnitManager : Singleton<UnitManager>
 		unit.Initialize(Guid.NewGuid(), unitStats, colour ?? Color.white, position);
 		unit.OnMovementCompleted += CompleteMoveOrder;
 
-
 		_Units.Add(unit);
 		return unit;
-	}
-
-	public static Civilization GetUnitCivilization(Guid id)
-	{
-		return GameManager.Instance.Civilizations
-						  .FirstOrDefault(civ => civ.Units.Contains(id));
 	}
 
 	/// <summary>
@@ -102,7 +98,7 @@ public class UnitManager : Singleton<UnitManager>
 
 		// Start move order and compute path.
 		_MoveOrders[id] = targetCoords;
-		List<HexCoords> path = FindPath(unit.Position, targetCoords);
+		HexCoords[] path = FindPath(unit.Position, targetCoords);
 		unit.SetPath(path);
 		unit.OnMovementCompleted += CompleteMoveOrder;
 	}
@@ -126,13 +122,16 @@ public class UnitManager : Singleton<UnitManager>
 	/// <param name="start">The starting hex position.</param>
 	/// <param name="goal">The destination hex position.</param>
 	/// <returns>The path containing hex positions.</returns>
-	private List<HexCoords> FindPath(HexCoords start, HexCoords goal)
+	private HexCoords[] FindPath(HexCoords start, HexCoords goal)
 	{
 		var frontier = new List<HexCoords> { start, };
 		var traveledPath = new Dictionary<HexCoords, HexCoords>();
 		var movementCost = new Dictionary<HexCoords, int> { [start] = 0, };
 		var totalCostToGoal = new Dictionary<HexCoords, int>
 				{ [start] = movementCost[start] + start.DistanceTo(goal), };
+
+		// Reserve space.
+		frontier.Capacity = 100;
 
 		// Loop until the no more tiles are left to check.
 		while (frontier.Count > 0)
@@ -163,8 +162,9 @@ public class UnitManager : Singleton<UnitManager>
 									 .Where(k => k.Value == goal))
 						movingUint = k.Key;
 
-					Civilization otherCiv = GetUnitCivilization(neighbourTile.UnitID);
-					Civilization movingCiv = GetUnitCivilization(movingUint);
+					Civilization otherCiv =
+							GameManager.GetUnitCivilization(neighbourTile.UnitID);
+					Civilization movingCiv = GameManager.GetUnitCivilization(movingUint);
 
 					if (movingCiv != otherCiv) continue;
 				}
@@ -189,13 +189,13 @@ public class UnitManager : Singleton<UnitManager>
 
 		// In case no valid path was found.
 		Debug.LogWarning("No valid path was found!");
-		return new List<HexCoords>();
+		return new HexCoords[] { };
 	}
 
-	private List<HexCoords> ReconstructPath(Dictionary<HexCoords, HexCoords> cameFrom,
+	private HexCoords[] ReconstructPath(Dictionary<HexCoords, HexCoords> cameFrom,
 			HexCoords current)
 	{
-		var path = new List<HexCoords>();
+		var path = new List<HexCoords> { Capacity = cameFrom.Count, };
 		// Continue until the current tile is equal to itself.
 		while (true)
 		{
@@ -205,7 +205,7 @@ public class UnitManager : Singleton<UnitManager>
 		}
 
 		path.Reverse();
-		return path;
+		return path.ToArray();
 	}
 }
 }

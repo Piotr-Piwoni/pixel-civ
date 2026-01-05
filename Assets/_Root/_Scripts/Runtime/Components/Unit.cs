@@ -80,7 +80,7 @@ public class Unit : MonoBehaviour
 		SetColour();
 	}
 
-	public void SetPath(List<HexCoords> path)
+	public void SetPath(HexCoords[] path)
 	{
 		if (path.IsNullOrEmpty()) return;
 

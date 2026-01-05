@@ -116,8 +116,8 @@ public class WorldGenerator : MonoBehaviour
 		for (int q = -r / 2; q < _WorldSize.x - r / 2; q++)
 		{
 			var hex = new Hex(q, r);
-			float noise = Mathf.PerlinNoise(hex.Coordinates.Offset.x * _NoiseScale,
-											hex.Coordinates.Offset.y * _NoiseScale);
+			Vector2 samplePoint = (Vector2)hex.Coordinates.Axial * _NoiseScale;
+			float noise = Mathf.PerlinNoise(samplePoint.x, samplePoint.y);
 
 			if (noise > _MountainLevel)
 				hex.Type = TileType.Mountain;

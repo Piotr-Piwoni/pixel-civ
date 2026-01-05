@@ -31,6 +31,10 @@ public class Civilization
 	public Civilization(CivilizationType type = CivilizationType.Random,
 			bool isPlayer = false)
 	{
+		// Reserve space.
+		Units.Capacity = 50;
+		Territory.Capacity = 50;
+
 		if (type == CivilizationType.Random)
 		{
 			// Compose an array of available civilization types, ignore the random member.

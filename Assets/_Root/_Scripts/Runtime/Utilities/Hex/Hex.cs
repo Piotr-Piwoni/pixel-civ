@@ -7,16 +7,6 @@ namespace PixelCiv.Utilities.Hex
 {
 public class Hex
 {
-	/*private static readonly Vector2Int[] _AxialDirections =
-	{
-			new(+1, -1),
-			new(0, -1),
-			new(-1, 0),
-			new(-1, +1),
-			new(0, +1),
-			new(+1, 0),
-	};*/
-
 	public HexCoords Coordinates { get; }
 	public TileBase Building;
 	public TileType Type;

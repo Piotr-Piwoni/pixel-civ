@@ -9,6 +9,12 @@ public class HexMap
 {
 	private readonly List<Hex> _HexTiles = new();
 
+
+	public HexMap()
+	{
+		_HexTiles.Capacity = 1000;
+	}
+
 	public Hex Find(HexCoords coords)
 	{
 		return _HexTiles.Find(n => n.Coordinates == coords);
