@@ -20,8 +20,8 @@ public class UnitManager : Singleton<UnitManager>
 	private readonly Dictionary<Guid, HexCoords> _MoveOrders = new();
 
 	private readonly List<Unit> _Units = new();
-	private List<UnitStats> _UnitTypesData = new();
 	private UnitStats _DefaultStats;
+	private UnitStats[] _UnitTypesData = { };
 
 
 	protected override void Awake()
@@ -29,9 +29,9 @@ public class UnitManager : Singleton<UnitManager>
 		base.Awake();
 		// Reserve space.
 		_Units.Capacity = 100;
-		_UnitTypesData.Capacity = 15;
 
-		_UnitTypesData = Resources.LoadAll<UnitStats>("Game/Units").ToList();
+		// Load Resources.
+		_UnitTypesData = Resources.LoadAll<UnitStats>("Game/Units");
 
 		// Create a default UnitStats asset at runtime.
 		if (_UnitTypesData.IsNullOrEmpty())
@@ -55,7 +55,7 @@ public class UnitManager : Singleton<UnitManager>
 		}
 
 		// Try and get desired Unit type stats.
-		UnitStats unitStats = _UnitTypesData.Find(n => n.Type == type);
+		UnitStats unitStats = Array.Find(_UnitTypesData, n => n.Type == type);
 		if (!unitStats)
 		{
 			Debug.LogWarning($"No UnitStats found for type {type}, using default.");

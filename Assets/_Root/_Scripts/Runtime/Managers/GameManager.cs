@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PixelCiv.Components;
+using PixelCiv.Scriptable_Objects;
 using PixelCiv.Systems;
 using PixelCiv.Utilities;
+using PixelCiv.Utilities.Hex;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -13,6 +15,8 @@ namespace PixelCiv.Managers
 [HideMonoScript,]
 public class GameManager : PersistentSingleton<GameManager>
 {
+	private static Dictionary<string, BuildingTypeData> _BuildingTypesData = new();
+
 	[ShowInInspector, ReadOnly,]
 	public Camera Camera { get; private set; }
 	[ShowInInspector, ReadOnly,]
@@ -46,10 +50,15 @@ public class GameManager : PersistentSingleton<GameManager>
 	protected override void Awake()
 	{
 		base.Awake();
-		_PreviousState = CurrentState;
+
+		// Load Resources.
+		_BuildingTypesData = Resources.LoadAll<BuildingTypeData>("Game/Buildings")
+									  .ToDictionary(b => b.Name, b => b);
 
 		// Reserve space.
 		Civilizations.Capacity = 10;
+
+		GetGroups();
 
 		// Init players.
 		for (var i = 0; i < _NumberOfPlayers; i++)
@@ -60,7 +69,7 @@ public class GameManager : PersistentSingleton<GameManager>
 			Civilizations.Add(civ);
 		}
 
-		GetGroups();
+		_PreviousState = CurrentState;
 	}
 
 	private void Start()
@@ -107,6 +116,27 @@ public class GameManager : PersistentSingleton<GameManager>
 	{
 		_PreviousState = CurrentState;
 		CurrentState = newState;
+	}
+
+	public static Building CreateBuilding(string buildingName, HexCoords position)
+	{
+		if (_BuildingTypesData.TryGetValue(buildingName, out BuildingTypeData data))
+			return new Building(data, position);
+
+		// Fallback to default.
+		if (!_BuildingTypesData.TryGetValue("Default", out data))
+		{
+			data = ScriptableObject.CreateInstance<BuildingTypeData>();
+			_BuildingTypesData["Default"] = data;
+
+			Debug.LogWarning($"Default {nameof(BuildingTypeData)} created. " +
+							 "Missing building type data detected.");
+		}
+		else
+			Debug.LogWarning("Invalid building type data provided! " +
+							 "Falling back to Default.");
+
+		return new Building(data, position);
 	}
 
 	public Civilization GetPlayerCivilization()
