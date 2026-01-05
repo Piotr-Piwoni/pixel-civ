@@ -70,7 +70,7 @@ public class WorldGenerator : MonoBehaviour
 
 				// Claim the tile as territory and render it on screen.
 				if (!validTile) continue;
-				civ.AddHexTile(hexCoords);
+				civ.AddTerritory(hexCoords);
 				_TerritoriesTilemap.SetTile(hexCoords.Offset, _TileSet.Base);
 				_TerritoriesTilemap.SetColor(hexCoords.Offset, civ.Colour);
 			}
@@ -178,26 +178,22 @@ public class WorldGenerator : MonoBehaviour
 				// Skip if any other civ already has a capital here.
 				bool isTaken = GameManager.Instance.Civilizations
 										  .Where(other => other != civ)
-										  .Any(other =>
-										  {
-											  Hex otherCapital = other.GetCapitalTile();
-											  return otherCapital != null &&
-													 otherCapital.Building ==
-													 _CastleTile &&
-													 otherCapital.Coordinates.Equals(
-															 candidateCoords);
-										  });
-
-
+										  .Any(other => other.CapitalCity != null &&
+														other.CapitalCity.Position ==
+														candidateCoords);
 				if (isTaken) continue;
 
 				Debug.Log($"Spawned the capital for {civ.Type}.");
 
 				// Place the capital.
-				candidateHex.Building = _CastleTile;
-				civ.AddHexTile(candidateHex.Coordinates);
-				_DetailsTilemap.SetTile(candidateHex.Coordinates.Offset,
-										candidateHex.Building);
+				Guid capitalID = civ.CreateBuilding("City", candidateCoords);
+				civ.ChangeCapital(capitalID);
+				civ.AddTerritory(civ.CapitalCity.Position);
+
+				candidateHex.BuildingID = capitalID;
+
+				_DetailsTilemap.SetTile(civ.CapitalCity.Position.Offset,
+										civ.CapitalCity.Data.Visual);
 
 				if (civ.IsPlayer)
 					SpawnPlayerSpawner(candidateHex.Coordinates.Offset);
@@ -239,30 +235,22 @@ public class WorldGenerator : MonoBehaviour
 				// Skip if any other civ already has a capital here.
 				bool isTaken = _Civilizations
 							   .Where(other => other != civ)
-							   .Any(other =>
-							   {
-								   Hex otherCapital = other
-													  .Territory
-													  .Select(hexCoords => GetHexMap()
-															  .Find(hexCoords))
-													  .FirstOrDefault(hex =>
-															  hex != null &&
-															  hex.Building);
-
-								   return otherCapital != null &&
-										  otherCapital.Building == _CastleTile &&
-										  otherCapital.Coordinates
-													  .Equals(candidateCoords);
-							   });
+							   .Any(other => other.CapitalCity != null &&
+											 other.CapitalCity.Position ==
+											 candidateCoords);
 				if (isTaken) continue;
 
 				Debug.Log($"Spawned the capital for {civ.Type}.");
 
 				// Place the capital.
-				candidateHex.Building = _CastleTile;
-				civ.AddHexTile(candidateHex.Coordinates);
-				_DetailsTilemap.SetTile(candidateHex.Coordinates.Offset,
-										candidateHex.Building);
+				Guid capitalID = civ.CreateBuilding("City", candidateCoords);
+				civ.ChangeCapital(capitalID);
+				civ.AddTerritory(civ.CapitalCity.Position);
+
+				candidateHex.BuildingID = capitalID;
+
+				_DetailsTilemap.SetTile(civ.CapitalCity.Position.Offset,
+										civ.CapitalCity.Data.Visual);
 
 				hasFoundCapitalTile = true;
 				break; // stop searching for this civ.
@@ -312,12 +300,12 @@ public class WorldGenerator : MonoBehaviour
 		// Claim an area around each civilization's capital.
 		foreach (Civilization civ in _Civilizations)
 		{
-			Hex otherCapital = civ.Territory
-								  .Select(hexCoords => GetHexMap().Find(hexCoords))
-								  .FirstOrDefault(hex => hex != null && hex.Building);
+			Building otherCapital = civ.CapitalCity;
 			if (otherCapital == null) continue;
 
-			HexCoords[] territory = otherCapital.GetSpiral(2);
+			const int CLAIM_AREA = 2;
+			HexCoords[] territory = civ.GetCapitalTile().GetSpiral(CLAIM_AREA);
+			if (territory == null) continue;
 			foreach (HexCoords hexCoords in territory)
 			{
 				// Make sure the candidate tile isn't already in another civilization's territory.
@@ -333,7 +321,7 @@ public class WorldGenerator : MonoBehaviour
 
 				// Claim the tile as territory and render it on screen.
 				if (!validTile) continue;
-				civ.AddHexTile(hexCoords);
+				civ.AddTerritory(hexCoords);
 				_TerritoriesTilemap.SetTile(hexCoords.Offset, _TileSet.Base);
 				_TerritoriesTilemap.SetColor(hexCoords.Offset, civ.Colour);
 			}

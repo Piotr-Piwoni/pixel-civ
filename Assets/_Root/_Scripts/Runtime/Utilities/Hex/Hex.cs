@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using PixelCiv.Utilities.Types;
-using UnityEngine.Tilemaps;
 
 namespace PixelCiv.Utilities.Hex
 {
 public class Hex
 {
 	public HexCoords Coordinates { get; }
-	public TileBase Building;
+	public Guid BuildingID = Guid.Empty;
 	public TileType Type;
 	public Guid UnitID = Guid.Empty;
 

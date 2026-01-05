@@ -101,7 +101,7 @@ MonoBehaviour:
       Data: 
   _Name: City
   _Visual: {fileID: 11400000, guid: 7f44ee97f6f949440be3acdb971566de, type: 2}
-  _Type: 1
+  _Type: 0
   _Category: 0
   _Health: 100
   _Defence: 10

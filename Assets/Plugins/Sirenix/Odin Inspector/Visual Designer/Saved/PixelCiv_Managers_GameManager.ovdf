@@ -3,7 +3,7 @@ PixelCiv.Managers.GameManager, Project
 MetaGuid:43a74e58b56948bdacff61bec5d8b7c5
 
 # $v6trgZ15hxQAYsf23DERX
-Position: $root:42
+Position: $root:41
 + [Sirenix.OdinInspector.TabGroupAttribute]
 	GroupName = "Main"
 	HideWhenChildrenAreInvisible = True
@@ -66,3 +66,8 @@ Position: $3A36nPSfZJFVtfAsKMUWXz:1
 # _MusicClip
 Position: $JBufoagBsEHi5SaJtK5Y6T:1
 + [Sirenix.OdinInspector.AssetsOnlyAttribute]
+
+# Civilizations
+Position: $MaEHNeQskjZ2paUPjnFWq3:3
++ [UnityEngine.SpaceAttribute]
+	height = 13

@@ -105,7 +105,8 @@ public class PlayerController : MonoBehaviour
 		if (selectedHex == null || selectedHex.UnitID == Guid.Empty) return;
 
 		// Check to see if the unit belongs to the player's civilization.
-		if (!GameManager.Instance.GetPlayerCivilization().Units.Contains(selectedHex.UnitID))
+		if (!GameManager.Instance.GetPlayerCivilization().Units
+						.Contains(selectedHex.UnitID))
 			return;
 
 		_SelectedUnit = selectedHex.UnitID;
@@ -114,7 +115,7 @@ public class PlayerController : MonoBehaviour
 				  $"Cell Coord: {selectedHex.Coordinates.Offset}\n" +
 				  $"Axial Coord: {selectedHex.Coordinates.Axial}\n" +
 				  $"Unit ID: {selectedHex.UnitID}\n" +
-				  $"Building: {selectedHex.Building}");
+				  $"Building: {selectedHex.BuildingID}");
 	}
 }
 }

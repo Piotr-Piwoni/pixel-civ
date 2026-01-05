@@ -19,9 +19,13 @@ public class Civilization
 	[ShowInInspector, ReadOnly,]
 	public bool IsPlayer { get; private set; }
 	[ShowInInspector, ReadOnly,]
+	public Building CapitalCity { get; private set; }
+	[ShowInInspector, ReadOnly,]
 	public CivilizationType Type { get; private set; }
 	[ShowInInspector, ReadOnly,]
 	public Color Colour { get; private set; } = Color.white;
+	[ShowInInspector, ReadOnly,]
+	public List<Building> Buildings { get; } = new();
 	[ShowInInspector, ReadOnly,]
 	public List<Guid> Units { get; } = new();
 	[ShowInInspector, ReadOnly,]
@@ -32,9 +36,11 @@ public class Civilization
 			bool isPlayer = false)
 	{
 		// Reserve space.
+		Buildings.Capacity = 20;
 		Units.Capacity = 50;
 		Territory.Capacity = 50;
 
+		IsPlayer = isPlayer;
 		if (type == CivilizationType.Random)
 		{
 			// Compose an array of available civilization types, ignore the random member.
@@ -46,8 +52,6 @@ public class Civilization
 		}
 		else
 			Type = type;
-
-		IsPlayer = isPlayer;
 
 		// Assign a colour based on Civilization type.
 		switch (Type)
@@ -65,7 +69,7 @@ public class Civilization
 		}
 	}
 
-	public void AddHexTile(HexCoords coords)
+	public void AddTerritory(HexCoords coords)
 	{
 		Territory.Add(coords);
 	}
@@ -75,10 +79,35 @@ public class Civilization
 		Units.Add(unitID);
 	}
 
+	public void ChangeCapital(Guid id)
+	{
+		Building city = FindBuilding(id);
+		if (city != null && city.Data.Name == "City")
+			CapitalCity = city;
+	}
+
+	public Guid CreateBuilding(string buildingName, HexCoords position)
+	{
+		Building building = GameManager.CreateBuilding(buildingName, position);
+		Buildings.Add(building);
+		return building.ID;
+	}
+
+	public Building FindBuilding(Guid id)
+	{
+		return Buildings.Find(n => n.ID == id);
+	}
+
 	public Hex GetCapitalTile()
 	{
-		return Territory.Select(hexCoords => GameManager.Instance.HexMap.Find(hexCoords))
-						.FirstOrDefault(hex => hex != null && hex.Building != null);
+		return GetTerritoryTile(CapitalCity.Position);
+	}
+
+	public Hex GetTerritoryTile(HexCoords coords)
+	{
+		return Territory.Contains(coords) ?
+					   GameManager.Instance.HexMap.Find(coords) :
+					   null;
 	}
 
 	public void Reset()

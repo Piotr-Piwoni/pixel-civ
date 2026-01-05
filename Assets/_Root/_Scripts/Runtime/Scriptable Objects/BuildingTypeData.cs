@@ -6,16 +6,16 @@ using UnityEngine.Tilemaps;
 
 namespace PixelCiv.Scriptable_Objects
 {
-[HideMonoScript, CreateAssetMenu(fileName = "BuildingTypeData",
-								 menuName = "Game/BuildingTypeData",
-								 order = 0),]
+[DisableInInlineEditors, HideMonoScript,
+ CreateAssetMenu(fileName = "BuildingTypeData", menuName = "Game/BuildingTypeData",
+				 order = 0),]
 public class BuildingTypeData : SerializedScriptableObject
 {
 	public BuildingCategory Category => _Category;
 	public BuildingRestriction[] Restrictions => _Restrictions.ToArray();
 	public BuildingType Type => _Type;
-	public BuildingTypeData PreviousTier => _PreviousTier;
 	public BuildingTypeData NextTier => _NextTier;
+	public BuildingTypeData PreviousTier => _PreviousTier;
 	public Dictionary<ResourceType, float> Production => _Production;
 	public int AttackPower => _AttackPower;
 	public int Defence => _Defence;
