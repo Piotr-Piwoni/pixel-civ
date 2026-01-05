@@ -1,0 +1,104 @@
+OVDF v1.1
+PixelCiv.Scriptable_Objects.BuildingTypeData, Project
+MetaGuid:2ea80154ebf7451ab73df1075601bad4
+
+# $AQommnSXFGxXhMBuyikmYe
+Position: $root:5
++ [Sirenix.OdinInspector.HorizontalGroupAttribute]
+	GroupName = "Row"
+	LabelWidth = 100
+	DisableAutomaticLabelWidth = True
+
+# $788RRZUqfu66mka95waepT
+Position: $NUVmtCw8QuUXtrmEJQhKY9:0
++ [Sirenix.OdinInspector.BoxGroupAttribute]
+	LabelText = "Stats"
+	ShowLabel = True
+	CenterLabel = False
+	GroupName = "Stats"
+
+# $LBopWxm9WXTb2FBmR8WQtg
+Position: $AQommnSXFGxXhMBuyikmYe:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute]
+
+# $RS5UpCXyBsbBvu67mbz2bF
+Position: $LBopWxm9WXTb2FBmR8WQtg:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = 20 %
+
+# $AykACBU543QQmjPvtnAtfp
+Position: $LBopWxm9WXTb2FBmR8WQtg:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+
+# $NUVmtCw8QuUXtrmEJQhKY9
+Position: $root:6
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	PaddingTop = 13
+	GroupName = "Section2"
+
+# $LahyBXfF7BrU8MhsoxBPga
+Position: $KjaHUbTPzCpPWW8nt6x7Tz:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute]
+
+# $EnpLtENm43oxBUWwJcDjQ7
+Position: $LahyBXfF7BrU8MhsoxBPga:0
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = Auto
+
+# $8oZJrYYRR9eB7vn3EDH4m3
+Position: $LahyBXfF7BrU8MhsoxBPga:1
++ [Sirenix.OdinInspector.ColumnGroupAttribute+ColumnSubGroupAttribute]
+	Size = Auto
+
+# $KjaHUbTPzCpPWW8nt6x7Tz
+Position: $root:31
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "Section4"
+	PaddingTop = 13
+
+# $PeShfEF4u2hWoFE2W6vTNh
+Position: $root:30
++ [Sirenix.OdinInspector.VerticalGroupAttribute]
+	GroupName = "Section3"
+	PaddingTop = 13
+
+# _Name
+Position: $AykACBU543QQmjPvtnAtfp:0
+
+# _Visual
+Position: $RS5UpCXyBsbBvu67mbz2bF:0
++ [Sirenix.OdinInspector.PreviewFieldAttribute]
+	FilterMode = Point
++ [Sirenix.OdinInspector.HideLabelAttribute]
+
+# _Type
+Position: $AykACBU543QQmjPvtnAtfp:1
++ [Sirenix.OdinInspector.EnumToggleButtonsAttribute]
+
+# _Category
+Position: $AykACBU543QQmjPvtnAtfp:2
++ [Sirenix.OdinInspector.EnumPagingAttribute]
+
+# _Production
+Position: $PeShfEF4u2hWoFE2W6vTNh:0
+
+# _Restrictions
+Position: $PeShfEF4u2hWoFE2W6vTNh:1
++ [Sirenix.OdinInspector.EnumPagingAttribute]
+
+# _Health
+Position: $788RRZUqfu66mka95waepT:0
+
+# _Defence
+Position: $788RRZUqfu66mka95waepT:1
+
+# _AttackPower
+Position: $788RRZUqfu66mka95waepT:2
+
+# _NextTier
+Position: $8oZJrYYRR9eB7vn3EDH4m3:0
+
+# _PreviousTier
+Position: $EnpLtENm43oxBUWwJcDjQ7:0
++ [Sirenix.OdinInspector.LabelWidthAttribute]
+	Width = 85
