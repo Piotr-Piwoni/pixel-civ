@@ -24,4 +24,11 @@ public enum BuildingRestriction
 	OnlyGrassland,
 	OnlyMountain,
 }
+
+public enum BuildingState
+{
+	Destroyed,
+	Damaged,
+	Normal,
+}
 }
