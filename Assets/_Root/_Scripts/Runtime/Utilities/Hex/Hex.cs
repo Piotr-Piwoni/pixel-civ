@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using PixelCiv.Utilities.Types;
-using UnityEngine;
 using UnityEngine.Tilemaps;
 
 namespace PixelCiv.Utilities.Hex
 {
 public class Hex
 {
-	private static readonly Vector2Int[] _AxialDirections =
+	/*private static readonly Vector2Int[] _AxialDirections =
 	{
 			new(+1, -1),
 			new(0, -1),
@@ -16,7 +15,7 @@ public class Hex
 			new(-1, +1),
 			new(0, +1),
 			new(+1, 0),
-	};
+	};*/
 
 	public HexCoords Coordinates { get; }
 	public TileBase Building;
@@ -41,16 +40,18 @@ public class Hex
 	public HexCoords[] GetNeighbours()
 	{
 		var neighbours = new HexCoords[6];
-		for (var i = 0; i < _AxialDirections.Length; i++)
-			neighbours[i] = new HexCoords(Coordinates.Axial + _AxialDirections[i]);
+		for (var i = 0; i < HexCoords.Directions.Length; i++)
+			neighbours[i] = Coordinates + HexCoords.Directions[i];
+
 		return neighbours;
 	}
 
 	public static HexCoords[] GetNeighbours(HexCoords coords)
 	{
 		var neighbours = new HexCoords[6];
-		for (var i = 0; i < _AxialDirections.Length; i++)
-			neighbours[i] = new HexCoords(coords.Axial + _AxialDirections[i]);
+		for (var i = 0; i < HexCoords.Directions.Length; i++)
+			neighbours[i] = coords + HexCoords.Directions[i];
+
 		return neighbours;
 	}
 
@@ -61,13 +62,13 @@ public class Hex
 			return results.ToArray();
 
 		// Start at top-right.
-		Vector2Int hex = Coordinates.Axial + _AxialDirections[4] * radius;
+		HexCoords hex = Coordinates + HexCoords.Directions[4] * radius;
 
 		for (var i = 0; i < 6; i++)
 		for (var j = 0; j < radius; j++)
 		{
-			results.Add(new HexCoords(hex));
-			hex += _AxialDirections[i];
+			results.Add(hex);
+			hex += HexCoords.Directions[i];
 		}
 
 		return results.ToArray();
@@ -81,13 +82,13 @@ public class Hex
 			return results.ToArray();
 
 		// Start at top-right.
-		Vector2Int hex = center.Axial + _AxialDirections[4] * radius;
+		HexCoords hex = center + HexCoords.Directions[4] * radius;
 
 		for (var i = 0; i < 6; i++)
 		for (var j = 0; j < radius; j++)
 		{
-			results.Add(new HexCoords(hex));
-			hex += _AxialDirections[i];
+			results.Add(hex);
+			hex += HexCoords.Directions[i];
 		}
 
 		return results.ToArray();

@@ -4,23 +4,42 @@ using UnityEngine;
 
 namespace PixelCiv.Utilities.Hex
 {
-public readonly struct HexCoords : IEquatable<HexCoords>
+public struct HexCoords : IEquatable<HexCoords>
 {
 	public int Q => Axial.x;
 	public int R => Axial.y;
 	public int S => Q + R;
+	public int X => Offset.x;
+	public int Y => Offset.y;
+	public int Z => Offset.z;
+
 	[ShowInInspector]
-	public Vector2Int Axial { get; }
+	public Vector2Int Axial { get; set; }
 	[ShowInInspector]
-	public Vector3Int Offset { get; }
+	public Vector3Int Offset => AxialToOffset(Axial);
 
 	public static HexCoords Zero => new(0, 0);
+	public static HexCoords NorthEast => new(+1, -1);
+	public static HexCoords North => new(0, -1);
+	public static HexCoords NorthWest => new(-1, 0);
+	public static HexCoords SouthWest => new(-1, +1);
+	public static HexCoords South => new(0, +1);
+	public static HexCoords SouthEast => new(+1, 0);
 
+
+	public static readonly HexCoords[] Directions =
+	{
+			NorthEast,
+			North,
+			NorthWest,
+			SouthWest,
+			South,
+			SouthEast,
+	};
 
 	public HexCoords(int q, int r)
 	{
 		Axial = new Vector2Int(q, r);
-		Offset = AxialToOffset(Axial);
 	}
 
 	public HexCoords(Vector2Int axial) : this(axial.x, axial.y) { }
@@ -43,7 +62,8 @@ public readonly struct HexCoords : IEquatable<HexCoords>
 	{
 		int dq = a.Q - b.Q;
 		int dr = a.R - b.R;
-		return (Mathf.Abs(dq) + Mathf.Abs(dr) + Mathf.Abs(dq + dr)) / 2;
+		int ds = a.S - b.S;
+		return (Mathf.Abs(dq) + Mathf.Abs(dr) + Mathf.Abs(ds)) / 2;
 	}
 
 	public int DistanceTo(HexCoords other)
@@ -66,6 +86,8 @@ public readonly struct HexCoords : IEquatable<HexCoords>
 		return Axial.GetHashCode();
 	}
 
+
+	// Operators.
 	public static bool operator ==(HexCoords a, HexCoords b)
 	{
 		return a.Equals(b);
@@ -74,6 +96,48 @@ public readonly struct HexCoords : IEquatable<HexCoords>
 	public static bool operator !=(HexCoords a, HexCoords b)
 	{
 		return !a.Equals(b);
+	}
+
+	public static HexCoords operator +(HexCoords a, HexCoords b)
+	{
+		return new HexCoords(a.Q + b.Q, a.R + b.R);
+	}
+
+	public static HexCoords operator -(HexCoords a, HexCoords b)
+	{
+		return new HexCoords(a.Q - b.Q, a.R - b.R);
+	}
+
+	public static HexCoords operator *(HexCoords a, int scalar)
+	{
+		return new HexCoords(a.Q * scalar, a.R * scalar);
+	}
+
+	public static HexCoords operator *(int scalar, HexCoords a)
+	{
+		return a * scalar;
+	}
+
+	public static HexCoords operator *(HexCoords a, float scalar)
+	{
+		return new HexCoords(Mathf.RoundToInt(a.Axial.x * scalar),
+							 Mathf.RoundToInt(a.Axial.y * scalar));
+	}
+
+	public static HexCoords operator *(float scalar, HexCoords a)
+	{
+		return a * scalar;
+	}
+
+	public static HexCoords operator /(HexCoords a, int scalar)
+	{
+		return new HexCoords(a.Q / scalar, a.R / scalar);
+	}
+
+	public static HexCoords operator /(HexCoords a, float scalar)
+	{
+		return new HexCoords(Mathf.RoundToInt(a.Axial.x / scalar),
+							 Mathf.RoundToInt(a.Axial.y / scalar));
 	}
 }
 }
