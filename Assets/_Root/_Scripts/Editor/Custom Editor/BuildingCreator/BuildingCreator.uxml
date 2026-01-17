@@ -1,0 +1,39 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/_Root/_Scripts/Editor/Custom%20Editor/BuildingCreator/BuildingCreator.uss?fileID=7433441132597879392&amp;guid=9988ba805ba9b7c4cb472a309742556c&amp;type=3#BuildingCreator"/>
+    <ui:GroupBox name="BuildingSettings" text="Building Settings" style="-unity-font-style: normal;">
+        <ui:TextField label="Name" placeholder-text="Building Name" name="NameField"/>
+        <UnityEditor.UIElements.ObjectField label="Visuals" type="UnityEngine.Sprite, UnityEngine.CoreModule" value="" allow-scene-objects="false" name="Visuals"/>
+        <ui:EnumField label="Type" type="PixelCiv.Utilities.Types.BuildingType, Project" name="Type" value="Normal"/>
+        <ui:EnumField label="Category" value="General" type="PixelCiv.Utilities.Types.BuildingCategory, Project" name="Category"/>
+        <ui:Foldout text="Production: WIP" name="Production" toggle-on-label-click="true" value="false" enabled="true">
+            <ui:ScrollView name="ScrollView" focusable="false">
+                <ui:VisualElement name="ProductionElement" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap; display: flex; visibility: visible;">
+                    <ui:EnumField label="Resource" value="Center" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" name="ResourceType"/>
+                    <ui:UnsignedIntegerField label="Amount" value="0" name="Amount" max-length="9999"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="ProductionElement" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap; display: flex; visibility: visible;">
+                    <ui:EnumField label="Resource" value="Center" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" name="ResourceType"/>
+                    <ui:UnsignedIntegerField label="Amount" value="0" name="Amount" max-length="9999"/>
+                </ui:VisualElement>
+                <ui:VisualElement name="ProductionElement" style="flex-grow: 0; flex-direction: row; flex-wrap: wrap; display: flex; visibility: visible;">
+                    <ui:EnumField label="Resource" value="Center" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" name="ResourceType"/>
+                    <ui:UnsignedIntegerField label="Amount" value="0" name="Amount" max-length="9999"/>
+                </ui:VisualElement>
+            </ui:ScrollView>
+        </ui:Foldout>
+        <ui:UnsignedIntegerField label="Health" value="10" max-length="9999" name="Health"/>
+        <ui:UnsignedIntegerField label="Defence" value="5" max-length="9999" name="Defence"/>
+        <ui:UnsignedIntegerField label="Attack Power" value="1" max-length="9999" name="AttackPower"/>
+        <UnityEditor.UIElements.ObjectField label="Previous Tier" name="PreviousTier" type="PixelCiv.Scriptable_Objects.BuildingTypeData, Project"/>
+        <UnityEditor.UIElements.ObjectField label="Next Tier" name="NextTier" type="PixelCiv.Scriptable_Objects.BuildingTypeData, Project"/>
+        <ui:Label text="Restrictions: WIP" name="Restrictions"/>
+        <ui:Button text="Create" name="CreateBtn"/>
+    </ui:GroupBox>
+    <ui:VisualElement name="Templates" style="flex-grow: 1; display: flex;">
+        <ui:VisualElement name="ProductionElement" style="flex-grow: 0; flex-direction: row; align-items: auto; justify-content: flex-start; align-self: auto; align-content: auto;">
+            <ui:EnumField label="Resource" value="Center" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" name="ResourceType" style="align-items: center;"/>
+            <ui:UnsignedIntegerField label="Amount" value="0" name="Amount" max-length="9999" style="align-items: center; justify-content: flex-start; align-self: center; flex-direction: row; align-content: auto; flex-shrink: 1; flex-grow: 1;"/>
+            <ui:Button text="Button" name="RemoveBtn"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
