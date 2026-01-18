@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 namespace PixelCiv.Utilities
 {
-public class Utils
+internal static class Utils
 {
 	public static HexCoords GetMouseHexCoords(Camera camera, Grid grid)
 	{

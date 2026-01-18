@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using PixelCiv.Utilities.Types;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
+[assembly: InternalsVisibleTo("Project.Editor")]
 
 namespace PixelCiv.Scriptable_Objects
 {
@@ -48,5 +51,45 @@ public class BuildingTypeData : SerializedScriptableObject
 	{
 			BuildingRestriction.InTerritory,
 	};
+
+
+	#if UNITY_EDITOR
+	internal void Init(BuildingTypeDataParams data)
+	{
+		_Name = data.Name;
+		_Visual = data.Visual;
+		_Type = data.Type;
+		_Category = data.Category;
+		_Health = data.Health;
+		_Defence = data.Defence;
+		_AttackPower = data.AttackPower;
+		_PreviousTier = data.PreviousTier;
+		_NextTier = data.NextTier;
+
+		_Production.Clear();
+		foreach (KeyValuePair<ResourceType, float> kvp in data.Production)
+			_Production[kvp.Key] = kvp.Value;
+
+		_Restrictions.Clear();
+		_Restrictions.AddRange(data.Restrictions);
+	}
+	#endif
 }
+
+#if UNITY_EDITOR
+public sealed class BuildingTypeDataParams
+{
+	public int AttackPower;
+	public BuildingCategory Category;
+	public int Defence;
+	public int Health;
+	public string Name;
+	public BuildingTypeData NextTier;
+	public BuildingTypeData PreviousTier;
+	public Dictionary<ResourceType, float> Production = new();
+	public List<BuildingRestriction> Restrictions = new();
+	public BuildingType Type;
+	public TileBase Visual;
+}
+#endif
 }

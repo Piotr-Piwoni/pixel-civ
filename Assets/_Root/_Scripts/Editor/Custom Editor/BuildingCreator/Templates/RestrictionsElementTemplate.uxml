@@ -1,0 +1,6 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="RestrictionsElement" style="flex-grow: 0; flex-direction: row; flex-basis: auto; align-self: stretch; justify-content: space-between;">
+        <ui:EnumField label="Restriction" value="InTerritory" type="PixelCiv.Utilities.Types.BuildingRestriction, Project" name="RestrictionType" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 5px; align-items: center;"/>
+        <ui:Button text="&#10060;" name="RemoveBtn" style="margin-top: 0; margin-right: 5px; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: center; aspect-ratio: 1; width: 20px; max-width: none; align-items: stretch; justify-content: flex-start;"/>
+    </ui:VisualElement>
+</ui:UXML>
