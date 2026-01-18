@@ -1,31 +1,11 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/_Root/_Scripts/Editor/Custom%20Editor/BuildingCreator/BuildingCreator.uss?fileID=7433441132597879392&amp;guid=9988ba805ba9b7c4cb472a309742556c&amp;type=3#BuildingCreator"/>
-    <ui:GroupBox name="BuildingSettings" text="Building Settings" style="-unity-font-style: normal;">
-        <ui:TextField label="Name" placeholder-text="Building Name" name="NameField" hide-placeholder-on-focus="true" value="Building"/>
-        <UnityEditor.UIElements.ObjectField label="Visuals" type="UnityEngine.Tilemaps.TileBase, UnityEngine.TilemapModule" allow-scene-objects="false" name="Visuals"/>
-        <ui:EnumField label="Type" type="PixelCiv.Utilities.Types.BuildingType, Project" name="Type" value="Normal"/>
-        <ui:EnumField label="Category" value="General" type="PixelCiv.Utilities.Types.BuildingCategory, Project" name="Category"/>
-        <ui:Foldout text="Production" name="Production" toggle-on-label-click="true" value="false" enabled="true">
-            <ui:ScrollView name="ScrollView" focusable="false" style="height: auto; min-height: 0; max-height: 140px;"/>
-            <ui:Button text="Create" name="CreateBtn"/>
-        </ui:Foldout>
-        <ui:GroupBox name="Stats" text="Stats">
-            <ui:UnsignedIntegerField label="Health" value="10" max-length="9999" name="Health"/>
-            <ui:UnsignedIntegerField label="Defence" value="5" max-length="9999" name="Defence"/>
-            <ui:UnsignedIntegerField label="Attack Power" value="1" max-length="9999" name="AttackPower"/>
-        </ui:GroupBox>
-        <UnityEditor.UIElements.ObjectField label="Previous Tier" name="PreviousTier" type="PixelCiv.Scriptable_Objects.BuildingTypeData, Project"/>
-        <UnityEditor.UIElements.ObjectField label="Next Tier" name="NextTier" type="PixelCiv.Scriptable_Objects.BuildingTypeData, Project"/>
-        <ui:Foldout text="Restrictions" name="Restrictions" toggle-on-label-click="true" value="false" enabled="true">
-            <ui:ScrollView name="ScrollView" focusable="false" style="height: auto; min-height: 0; max-height: 140px;">
-                <ui:VisualElement name="RestrictionsElement" style="flex-grow: 0; flex-direction: row; flex-basis: auto; align-self: stretch; justify-content: space-between;">
-                    <ui:EnumField label="Restriction" value="InTerritory" type="PixelCiv.Utilities.Types.BuildingRestriction, Project" name="RestrictionType" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 5px; align-items: center;"/>
-                    <ui:Button text="&#10060;" name="RemoveBtn" style="margin-top: 0; margin-right: 5px; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: center; aspect-ratio: 1; width: 20px; max-width: none; align-items: stretch; justify-content: flex-start;"/>
-                </ui:VisualElement>
-            </ui:ScrollView>
-            <ui:Button text="Create" name="CreateBtn"/>
-        </ui:Foldout>
-        <ui:TextField label="Folder Save Path" placeholder-text="Folder Path" name="FolderSavePath" hide-placeholder-on-focus="true"/>
-        <ui:Button text="Create" name="FinalCreateBtn"/>
-    </ui:GroupBox>
+    <ui:VisualElement name="LeftPanel" style="flex-grow: 1; flex-wrap: wrap; align-items: flex-start; align-content: flex-start;">
+        <UnityEditor.UIElements.Toolbar style="width: 100%;">
+            <UnityEditor.UIElements.ToolbarButton text="&#128465;&#65039;" name="DeleteBtn"/>
+            <UnityEditor.UIElements.ToolbarButton text="New" name="NewBtn"/>
+        </UnityEditor.UIElements.Toolbar>
+        <ui:ListView name="BuildList" item-template="project://database/Assets/_Root/_Scripts/Editor/Custom%20Editor/BuildingCreator/Templates/BuildingElementTemplate.uxml?fileID=9197481963319205126&amp;guid=2667b86dee8546d4b89510958db9e1f8&amp;type=3#BuildingElementTemplate" fixed-item-height="50" show-border="true" header-title="Building List" show-foldout-header="true" style="display: flex; align-self: stretch;"/>
+    </ui:VisualElement>
+    <ui:VisualElement name="RightPanel" style="flex-grow: 1;"/>
 </ui:UXML>

@@ -8,6 +8,7 @@ MonoImporter:
   - _VisualTreeAsset: {fileID: 9197481963319205126, guid: efa1e455ffb443e4bb09cdb9ae621125, type: 3}
   - _ProductionElementTemplate: {fileID: 9197481963319205126, guid: 8288615d06449854691aae0a10fffddf, type: 3}
   - _RestrictionElementTemplate: {fileID: 9197481963319205126, guid: 89c41a562449361468505951fe411286, type: 3}
+  - _SettingsTemplate: {fileID: 9197481963319205126, guid: 77428156ba0da1a4b90a96d5c5b38c5e, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

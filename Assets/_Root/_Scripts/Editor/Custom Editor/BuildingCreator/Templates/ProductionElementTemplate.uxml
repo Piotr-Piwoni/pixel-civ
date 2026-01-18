@@ -1,6 +1,6 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <ui:VisualElement name="ProductionElement" style="flex-grow: 0; flex-direction: row; flex-basis: auto; align-self: stretch; justify-content: space-between;">
-        <ui:EnumField label="Resource" value="Center" type="UnityEngine.TextAlignment, UnityEngine.TextRenderingModule" name="ResourceType" style="align-items: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 5px; align-self: stretch;"/>
+        <ui:EnumField label="Resource" value="Gold" type="PixelCiv.Utilities.Types.ResourceType, Project" name="ResourceType" style="align-items: center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 5px; align-self: stretch;"/>
         <ui:FloatField label="Amount" value="0" max-length="9999" name="Amount" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; align-items: center; align-self: stretch; align-content: auto;"/>
         <ui:Button text="&#10060;" name="RemoveBtn" style="margin-top: 0; margin-right: 5px; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; align-self: center; aspect-ratio: 1; width: 20px; max-width: none; align-items: stretch; justify-content: flex-start;"/>
     </ui:VisualElement>
